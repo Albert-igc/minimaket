@@ -1,0 +1,2111 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ColmadoSync Pro Max</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root{
+      --shadow:0 25px 60px rgba(0,0,0,.35);
+      --gold-1:#f59e0b;
+      --gold-2:#fde68a;
+      --gold-3:#facc15;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      min-height:100%;
+      margin:0;
+      background:
+        radial-gradient(circle at top left, rgba(234,179,8,.12), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(14,165,233,.10), transparent 25%),
+        linear-gradient(180deg, #020617 0%, #0f172a 100%);
+      color:#e5e7eb;
+      font-family:"Pixelify Sans", system-ui, sans-serif;
+      scroll-behavior:smooth;
+    }
+    body{overflow-x:hidden}
+    .hidden{display:none !important}
+    .opacity-0{opacity:0 !important}
+    .transition-opacity{transition-property:opacity !important;transition-timing-function:ease !important}
+    .duration-500{transition-duration:.5s !important}
+    .glass-panel{
+      background:linear-gradient(180deg, rgba(15,23,42,.88), rgba(2,6,23,.9));
+      border:1px solid rgba(148,163,184,.18);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+    }
+    .pixel-card{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(148,163,184,.16);
+      border-radius:1.5rem;
+      background:linear-gradient(180deg, rgba(30,41,59,.94), rgba(15,23,42,.97));
+      box-shadow:0 15px 35px rgba(2,6,23,.25);
+    }
+    .pixel-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg, rgba(250,204,21,.08), transparent 35%, rgba(14,165,233,.05));
+      pointer-events:none;
+    }
+    .pixel-btn{
+      border:1px solid rgba(148,163,184,.16);
+      border-radius:1rem;
+      padding:.85rem 1.15rem;
+      font-size:1rem;
+      line-height:1;
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+      box-shadow:0 10px 25px rgba(0,0,0,.18);
+      white-space:nowrap;
+      user-select:none;
+    }
+    .pixel-btn:hover{transform:translateY(-2px)}
+    .pixel-btn:active{transform:translateY(0)}
+    .pixel-btn-primary{background:linear-gradient(180deg, rgba(34,197,94,.95), rgba(22,163,74,.95));color:white}
+    .pixel-btn-secondary{background:linear-gradient(180deg, rgba(30,41,59,.95), rgba(15,23,42,.95));color:#e2e8f0}
+    .pixel-btn-danger{background:linear-gradient(180deg, rgba(239,68,68,.96), rgba(185,28,28,.96));color:white}
+    .pixel-btn-gold{background:linear-gradient(180deg, rgba(251,191,36,.98), rgba(245,158,11,.98));color:#111827}
+    .pixel-input,.pixel-select,.pixel-textarea{
+      width:100%;
+      border-radius:1rem;
+      border:1px solid rgba(148,163,184,.18);
+      background:rgba(2,6,23,.72);
+      color:#f8fafc;
+      padding:1rem 1rem;
+      font-size:1rem;
+      outline:none;
+      transition:border .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .pixel-input:focus,.pixel-select:focus,.pixel-textarea:focus{
+      border-color:rgba(250,204,21,.48);
+      box-shadow:0 0 0 3px rgba(250,204,21,.12);
+      background:rgba(2,6,23,.92);
+    }
+    .pixel-label{display:block;font-size:.92rem;margin-bottom:.45rem;color:#cbd5e1}
+    .badge{
+      display:inline-flex;align-items:center;gap:.45rem;border-radius:999px;padding:.45rem .85rem;
+      border:1px solid rgba(148,163,184,.16);font-size:.85rem;background:rgba(15,23,42,.88)
+    }
+    .badge-success{color:#86efac;border-color:rgba(34,197,94,.28)}
+    .badge-danger{color:#fca5a5;border-color:rgba(239,68,68,.28)}
+    .badge-warning{color:#fcd34d;border-color:rgba(245,158,11,.28)}
+    .badge-info{color:#7dd3fc;border-color:rgba(14,165,233,.28)}
+    .tab-btn{
+      border:1px solid rgba(148,163,184,.16);
+      background:rgba(15,23,42,.72);
+      color:#cbd5e1;
+      border-radius:1rem;
+      padding:.9rem 1rem;
+      cursor:pointer;
+      transition:all .18s ease;
+    }
+    .tab-btn.active{
+      background:linear-gradient(180deg, rgba(250,204,21,.18), rgba(245,158,11,.10));
+      border-color:rgba(250,204,21,.35);
+      color:#fef3c7;
+      box-shadow:0 12px 28px rgba(245,158,11,.15);
+    }
+    #splashScreen{animation:splash-auto-hide .55s ease 3.05s forwards}
+    @keyframes splash-auto-hide{to{opacity:0;visibility:hidden;pointer-events:none}}
+    .splash-bg{
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,.18), transparent 14%),
+        radial-gradient(circle at center, rgba(250,204,21,.14), transparent 35%),
+        linear-gradient(180deg, #020617 0%, #0f172a 100%);
+    }
+    .coin-wrap{
+      position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center;perspective:1000px;will-change:transform, box-shadow;
+    }
+    .coin{
+      width:120px;height:120px;border-radius:50%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.76), rgba(255,255,255,0) 25%),
+        linear-gradient(135deg, var(--gold-2), var(--gold-1) 45%, var(--gold-3) 100%);
+      border:6px solid rgba(255,248,209,.42);
+      box-shadow:inset 0 0 0 4px rgba(255,241,118,.35), inset 0 0 24px rgba(180,83,9,.25), 0 18px 45px rgba(250,204,21,.28);
+      display:flex;align-items:center;justify-content:center;font-size:3rem;
+      animation:coin-jump 2.45s cubic-bezier(.2,.9,.2,1) forwards;
+      transform-style:preserve-3d;position:relative;
+    }
+    .coin::before,.coin::after{
+      content:"";position:absolute;inset:12px;border-radius:50%;border:3px dashed rgba(255,255,255,.24);opacity:.55
+    }
+    .coin-mini{
+      width:28px;height:28px;border-radius:50%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.74), rgba(255,255,255,0) 25%),
+        linear-gradient(135deg, var(--gold-2), var(--gold-1) 45%, var(--gold-3) 100%);
+      border:2px solid rgba(255,248,209,.48);box-shadow:0 6px 18px rgba(245,158,11,.28);
+    }
+    @keyframes coin-jump{
+      0%{transform:translate3d(0,0,0) rotateY(0deg) scale(1);box-shadow:inset 0 0 0 4px rgba(255,241,118,.35), inset 0 0 24px rgba(180,83,9,.25), 0 18px 45px rgba(250,204,21,.28), 0 0 0 0 rgba(255,255,255,0)}
+      16%{transform:translate3d(0,-75px,0) rotateY(90deg) scale(1.04)}
+      32%{transform:translate3d(0,-200px,0) rotateY(180deg) scale(1.1)}
+      52%{transform:translate3d(0,-70px,0) rotateY(270deg) scale(1.03)}
+      70%{transform:translate3d(0,0,0) rotateY(360deg) scale(1)}
+      88%{transform:translate3d(0,0,0) rotateY(360deg) scale(1);box-shadow:inset 0 0 0 4px rgba(255,241,118,.35), inset 0 0 24px rgba(180,83,9,.25), 0 18px 45px rgba(250,204,21,.28), 0 0 0 0 rgba(255,255,255,.96)}
+      100%{transform:translate3d(0,0,0) rotateY(360deg) scale(1);box-shadow:inset 0 0 0 4px rgba(255,241,118,.35), inset 0 0 24px rgba(180,83,9,.25), 0 18px 45px rgba(250,204,21,.28), 0 0 0 140vmax rgba(255,255,255,.98)}
+    }
+    .shine-dot{
+      position:absolute;border-radius:999px;background:rgba(255,255,255,.92);filter:blur(.6px);animation:spark 2.3s ease-in-out infinite;opacity:.85
+    }
+    .shine-dot:nth-child(1){width:10px;height:10px;top:20%;left:18%;animation-delay:.05s}
+    .shine-dot:nth-child(2){width:7px;height:7px;top:65%;left:24%;animation-delay:.25s}
+    .shine-dot:nth-child(3){width:8px;height:8px;top:24%;right:18%;animation-delay:.55s}
+    .shine-dot:nth-child(4){width:6px;height:6px;bottom:18%;right:22%;animation-delay:.9s}
+    @keyframes spark{0%,100%{transform:scale(.8);opacity:.25}50%{transform:scale(1.6);opacity:1}}
+    .scanner-reader video,#qr-reader video{border-radius:1.35rem;overflow:hidden}
+    .floating-scan{
+      position:fixed;right:1.4rem;bottom:1.4rem;width:74px;height:74px;border-radius:50%;border:0;
+      display:flex;align-items:center;justify-content:center;font-size:1.9rem;cursor:pointer;color:#08120d;
+      background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.85), rgba(255,255,255,0) 28%), linear-gradient(135deg, #4ade80, #16a34a);
+      box-shadow:0 20px 45px rgba(34,197,94,.35);z-index:35;transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .floating-scan:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 24px 55px rgba(34,197,94,.38)}
+    .timeline{position:relative;padding-left:1.4rem}
+    .timeline::before{content:"";position:absolute;left:.45rem;top:.25rem;bottom:.25rem;width:2px;background:linear-gradient(180deg, rgba(250,204,21,.4), rgba(6,182,212,.2))}
+    .timeline-item{position:relative;padding:0 0 1rem 1rem}
+    .timeline-item::before{content:"";position:absolute;left:-.12rem;top:.4rem;width:.8rem;height:.8rem;border-radius:50%;background:linear-gradient(135deg, var(--gold-2), var(--gold-1));box-shadow:0 0 0 4px rgba(245,158,11,.18)}
+    .toast-zone{position:fixed;top:1rem;right:1rem;z-index:60;display:flex;flex-direction:column;gap:.7rem;max-width:min(92vw, 360px)}
+    .toast{border-radius:1.1rem;padding:1rem 1rem;border:1px solid rgba(148,163,184,.16);background:rgba(15,23,42,.95);box-shadow:var(--shadow);animation:toast-in .22s ease forwards;font-size:.95rem}
+    @keyframes toast-in{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-shell{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(2,6,23,.75);backdrop-filter:blur(6px)}
+    .modal-card{width:min(100%, 960px);max-height:calc(100vh - 2rem);overflow:auto;border-radius:2rem;background:linear-gradient(180deg, rgba(15,23,42,.98), rgba(2,6,23,.98));border:1px solid rgba(148,163,184,.16);box-shadow:var(--shadow)}
+    .full-mobile-modal{width:min(100%,1100px);max-height:calc(100vh - 1rem);min-height:min(100vh - 1rem, 900px)}
+    .muted{color:#94a3b8}
+    .table-wrap{overflow:auto;border-radius:1.25rem;border:1px solid rgba(148,163,184,.12)}
+    .table{width:100%;border-collapse:collapse;min-width:760px}
+    .table th,.table td{padding:.9rem 1rem;text-align:left;border-bottom:1px solid rgba(148,163,184,.1);vertical-align:top}
+    .table thead th{background:rgba(30,41,59,.88);color:#f8fafc;position:sticky;top:0;z-index:1}
+    .empty-state{padding:2rem 1rem;text-align:center;color:#94a3b8;border:1px dashed rgba(148,163,184,.2);border-radius:1.25rem;background:rgba(2,6,23,.35)}
+    .inventory-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(255px, 1fr));gap:1rem}
+    .sale-line{display:flex;justify-content:space-between;gap:1rem;padding:.95rem 0;border-bottom:1px dashed rgba(148,163,184,.16)}
+    .sale-line:last-child{border-bottom:0}
+    .dot-online{width:.6rem;height:.6rem;border-radius:999px;display:inline-block;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18)}
+    .dot-offline{width:.6rem;height:.6rem;border-radius:999px;display:inline-block;background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.18)}
+    ::-webkit-scrollbar{width:10px;height:10px}
+    ::-webkit-scrollbar-thumb{background:rgba(148,163,184,.28);border-radius:999px}
+    ::-webkit-scrollbar-track{background:rgba(15,23,42,.28)}
+    @media (max-width:767px){
+      .pixel-input,.pixel-select,.pixel-textarea{font-size:1.05rem;padding:1rem 1rem}
+      .modal-shell{padding:.35rem;align-items:flex-end}
+      .modal-card{width:100%;max-height:96vh;border-radius:1.6rem 1.6rem 0 0}
+    }
+    @media print{
+      body *{visibility:hidden !important}
+      #printArea,#printArea *{visibility:visible !important}
+      #printArea{position:absolute !important;inset:0 !important;width:100% !important;background:white !important;color:black !important;padding:1rem !important}
+    }
+  </style>
+</head>
+<body>
+  <div id="toastZone" class="toast-zone"></div>
+
+  <section id="splashScreen" class="splash-bg fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 overflow-hidden">
+    <div class="absolute inset-0 opacity-70">
+      <span class="shine-dot"></span><span class="shine-dot"></span><span class="shine-dot"></span><span class="shine-dot"></span>
+    </div>
+    <div class="coin-wrap"><div class="coin">₵</div></div>
+    <div class="text-center px-4">
+      <h1 class="text-4xl md:text-6xl font-bold tracking-widest text-amber-200">ColmadoSync Pro Max</h1>
+      <p class="mt-3 text-slate-300 text-lg md:text-xl">Inventario, ventas, escaneo y control total para tu colmado.</p>
+    </div>
+  </section>
+
+  <section id="authScreen" class="min-h-screen">
+    <div class="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-10">
+      <header class="glass-panel rounded-[2rem] p-5 md:p-6">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div class="flex items-center gap-4">
+            <div class="relative flex h-20 w-20 items-center justify-center">
+              <div class="coin-mini animate-bounce absolute -top-1 left-1/2 -translate-x-1/2"></div>
+              <div class="text-5xl">🏠</div>
+            </div>
+            <div>
+              <div class="text-3xl md:text-4xl font-bold text-amber-200">Bienvenido</div>
+              <p class="muted">Registra tu colmado, entra con tu usuario o entra como administrador.</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge badge-info">📱 Escáner rápido</span>
+            <span class="badge badge-success">💾 Guarda local</span>
+            <span class="badge badge-warning">☁️ Sincroniza si hay internet</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_.85fr]">
+        <div class="pixel-card p-6 md:p-8">
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-3xl md:text-5xl font-bold leading-tight text-white">Sistema completo para colmados y mini markets.</h2>
+              <p class="mt-3 text-lg muted">Registra productos por escaneo, genera QR únicos, vende con cámara, controla pedidos de proveedores y administra múltiples tiendas.</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div class="glass-panel rounded-3xl p-4"><div class="text-3xl">📦</div><div class="mt-3 text-xl font-semibold">Inventario inteligente</div><p class="mt-2 muted">Agrega productos por código de barras, edítalos desde el celular y recibe alertas de bajo stock.</p></div>
+              <div class="glass-panel rounded-3xl p-4"><div class="text-3xl">⚖️</div><div class="mt-3 text-xl font-semibold">Productos pesados</div><p class="mt-2 muted">Calcula precio por libra, genera QR con peso/precio y descuenta del stock al vender.</p></div>
+              <div class="glass-panel rounded-3xl p-4"><div class="text-3xl">🚚</div><div class="mt-3 text-xl font-semibold">Pedidos y proveedores</div><p class="mt-2 muted">Guarda empresas, día de visita, estado del camión y próxima llegada de pedidos.</p></div>
+              <div class="glass-panel rounded-3xl p-4"><div class="text-3xl">🧠</div><div class="mt-3 text-xl font-semibold">Vista administrador</div><p class="mt-2 muted">Controla todas las tiendas, el ITBIS global y la telemetría cuando el equipo tiene internet.</p></div>
+            </div>
+
+            <div class="glass-panel rounded-3xl p-5">
+              <div class="text-lg font-semibold text-amber-200">Acceso administrador inicial</div>
+              <p class="mt-2 muted">Usuario: <span class="text-white">admin</span> · Contraseña: <span class="text-white">admin1234</span></p>
+              <p class="mt-2 text-sm text-amber-100">Cámbialos luego en la Configuración Maestra.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pixel-card p-5 md:p-6">
+          <div class="flex gap-2 rounded-2xl bg-slate-900/60 p-2">
+            <button id="authLoginTab" class="tab-btn active flex-1" onclick="CSPM.showAuthMode('login')">Entrar</button>
+            <button id="authRegisterTab" class="tab-btn flex-1" onclick="CSPM.showAuthMode('register')">Registrar colmado</button>
+          </div>
+
+          <div id="loginPane" class="mt-5">
+            <form id="loginForm" class="space-y-4" onsubmit="CSPM.login(event)">
+              <div><label class="pixel-label">Usuario</label><input class="pixel-input" name="usuario" placeholder="Ej. colmado_jose o admin" required /></div>
+              <div><label class="pixel-label">Contraseña</label><input type="password" class="pixel-input" name="password" placeholder="••••••••" required /></div>
+              <button type="submit" class="pixel-btn pixel-btn-gold w-full !py-4 text-lg">Entrar al sistema</button>
+            </form>
+          </div>
+
+          <div id="registerPane" class="mt-5 hidden">
+            <form id="registerForm" class="space-y-4" onsubmit="CSPM.registerStore(event)">
+              <div><label class="pixel-label">Nombre del colmado / mini market</label><input class="pixel-input" name="nombre" placeholder="Ej. Colmado La Esquina" required /></div>
+              <div><label class="pixel-label">Nombre del dueño</label><input class="pixel-input" name="owner_name" placeholder="Ej. José Pérez" required /></div>
+              <div><label class="pixel-label">Tipo de negocio</label><select class="pixel-select" name="tipo_negocio"><option value="colmado">Colmado</option><option value="mini_market">Mini market</option><option value="supermercado">Supermercado pequeño</option></select></div>
+              <div><label class="pixel-label">Usuario del negocio</label><input class="pixel-input" name="usuario" placeholder="Ej. laesquina01" required /></div>
+              <div><label class="pixel-label">Contraseña</label><input type="password" class="pixel-input" name="password" placeholder="Crea una contraseña" required /></div>
+              <div><label class="pixel-label">Porcentaje de ganancia inicial</label><input type="number" min="0" step="0.01" class="pixel-input" name="porcentaje_ganancia" value="20" required /></div>
+              <button type="submit" class="pixel-btn pixel-btn-primary w-full !py-4 text-lg">Crear colmado y entrar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dashboardScreen" class="hidden min-h-screen"><div id="dashboardRoot"></div></section>
+
+  <div id="scannerModal" class="hidden modal-shell">
+    <div class="modal-card p-4 md:p-6">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between gap-3">
+          <div><h3 class="text-2xl font-bold text-amber-200">Escáner inteligente</h3><p id="scannerHint" class="muted">Abriendo cámara trasera…</p></div>
+          <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.closeScanner()">Cerrar</button>
+        </div>
+        <div class="rounded-[1.5rem] border border-slate-700 bg-slate-950/60 p-3">
+          <div id="scannerReader" class="scanner-reader min-h-[320px] overflow-hidden rounded-[1.25rem] bg-black"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="productModal" class="hidden modal-shell"><div id="productModalCard" class="modal-card full-mobile-modal"></div></div>
+  <div id="qrModal" class="hidden modal-shell"><div id="qrModalCard" class="modal-card max-w-2xl"></div></div>
+
+  <script>
+    const CSPM = {
+      DB_KEYS: {
+        master: 'db_master_config',
+        stores: 'db_colmados',
+        products: 'db_productos',
+        sales: 'db_ventas',
+        suppliers: 'db_empresas',
+        orders: 'db_pedidos',
+        telemetry: 'db_telemetry',
+        session: 'cspm_session',
+        device: 'cspm_device_id'
+      },
+      state: {
+        authMode: 'login',
+        activeTab: 'venta',
+        scannerMode: 'sale',
+        scannerContext: {},
+        scanner: null,
+        scannerRunning: false,
+        cart: [],
+        inventorySearch: '',
+        inventorySupplier: 'all',
+        inventoryStoreFilter: 'all',
+        saleSearch: '',
+        adminSnapshots: {},
+        adminChart: null,
+        adminPoller: null,
+        currentQrProductId: null,
+        ignoreScanUntil: 0
+      },
+      _memoryLocal: {},
+      _memorySession: {},
+      _localStore: null,
+      _sessionStore: null,
+
+init() {
+  this.setupStorage();
+  this.playSplash();
+  try {
+    this.ensureData();
+  } catch (error) {
+    console.error('CSPM boot error:', error);
+    this.bootSafeMode(error);
+  }
+  window.addEventListener('online', () => {
+    this.toast('Internet restablecido. Puedes sincronizar.', 'success');
+    this.renderConnectivity();
+    const session = this.getSession();
+    if (session && session.role === 'owner') this.queueStoreSync(session.store_id);
+  });
+  window.addEventListener('offline', () => {
+    this.toast('Modo offline activo. El sistema sigue guardando localmente.', 'warning');
+    this.renderConnectivity();
+  });
+},
+
+setupStorage() {
+  this._localStore = this.makeSafeStorage('local');
+  this._sessionStore = this.makeSafeStorage('session');
+},
+
+makeSafeStorage(kind) {
+  const bucket = kind === 'session' ? this._memorySession : this._memoryLocal;
+  let nativeStore = null;
+  try { nativeStore = kind === 'session' ? window.sessionStorage : window.localStorage; } catch (error) { nativeStore = null; }
+  if (nativeStore) {
+    try {
+      const probe = `__cspm_probe_${kind}_${Date.now()}`;
+      nativeStore.setItem(probe, '1');
+      nativeStore.removeItem(probe);
+      return nativeStore;
+    } catch (error) {}
+  }
+  return {
+    getItem(key) { return Object.prototype.hasOwnProperty.call(bucket, key) ? bucket[key] : null; },
+    setItem(key, value) { bucket[key] = String(value); },
+    removeItem(key) { delete bucket[key]; }
+  };
+},
+
+bootSafeMode(error) {
+  const splash = document.getElementById('splashScreen');
+  const auth = document.getElementById('authScreen');
+  if (splash) splash.classList.add('hidden');
+  if (auth) auth.classList.remove('hidden');
+  this.toast('Se activó el modo seguro para que puedas entrar al sistema.', 'warning');
+},
+
+playSplash() {
+  setTimeout(() => {
+    document.getElementById('splashScreen').classList.add('opacity-0', 'transition-opacity', 'duration-500');
+    setTimeout(() => {
+      document.getElementById('splashScreen').classList.add('hidden');
+      const session = this.getSession();
+      if (session) {
+        this.showDashboard();
+      } else {
+        document.getElementById('authScreen').classList.remove('hidden');
+      }
+    }, 520);
+  }, 2550);
+},
+
+ensureData() {
+  const master = this.getRaw(this.DB_KEYS.master, null);
+  if (!master) {
+    this.setRaw(this.DB_KEYS.master, {
+      itbis: 18,
+      admin_username: 'admin',
+      admin_password: 'admin1234',
+      webhook_url: '',
+      cloud_enabled: false,
+      firebase_db_url: '',
+      firebase_auth_token: '',
+      auto_sync_seconds: 30,
+      updated_at: new Date().toISOString()
+    });
+  }
+  if (!this.getRaw(this.DB_KEYS.stores, null)) this.setRaw(this.DB_KEYS.stores, []);
+  if (!this.getRaw(this.DB_KEYS.products, null)) this.setRaw(this.DB_KEYS.products, []);
+  if (!this.getRaw(this.DB_KEYS.sales, null)) this.setRaw(this.DB_KEYS.sales, []);
+  if (!this.getRaw(this.DB_KEYS.suppliers, null)) this.setRaw(this.DB_KEYS.suppliers, []);
+  if (!this.getRaw(this.DB_KEYS.orders, null)) this.setRaw(this.DB_KEYS.orders, []);
+  if (!this.getRaw(this.DB_KEYS.telemetry, null)) this.setRaw(this.DB_KEYS.telemetry, []);
+  if (!this._localStore.getItem(this.DB_KEYS.device)) this._localStore.setItem(this.DB_KEYS.device, this.uid('DEVICE'));
+},
+
+showAuthMode(mode) {
+  this.state.authMode = mode;
+  document.getElementById('authLoginTab').classList.toggle('active', mode === 'login');
+  document.getElementById('authRegisterTab').classList.toggle('active', mode === 'register');
+  document.getElementById('loginPane').classList.toggle('hidden', mode !== 'login');
+  document.getElementById('registerPane').classList.toggle('hidden', mode !== 'register');
+},
+
+login(event) {
+  event.preventDefault();
+  const fd = new FormData(event.target);
+  const usuario = String(fd.get('usuario') || '').trim();
+  const password = String(fd.get('password') || '').trim();
+  const master = this.getMasterConfig();
+  if (usuario === master.admin_username && password === master.admin_password) {
+    this.setSession({ role: 'admin', usuario: master.admin_username, logged_at: new Date().toISOString() });
+    this.toast('Bienvenido, administrador.', 'success');
+    this.showDashboard();
+    event.target.reset();
+    return;
+  }
+  const stores = this.getStores();
+  const store = stores.find(s => s.usuario === usuario && s.password === password);
+  if (!store) {
+    this.toast('Usuario o contraseña inválidos.', 'danger');
+    return;
+  }
+  this.setSession({ role: 'owner', store_id: store.id, usuario: store.usuario, logged_at: new Date().toISOString() });
+  this.toast('Entrada correcta. Cargando tu colmado...', 'success');
+  this.showDashboard();
+  event.target.reset();
+},
+
+registerStore(event) {
+  event.preventDefault();
+  const fd = new FormData(event.target);
+  const nombre = String(fd.get('nombre') || '').trim();
+  const owner_name = String(fd.get('owner_name') || '').trim();
+  const tipo_negocio = String(fd.get('tipo_negocio') || 'colmado');
+  const usuario = String(fd.get('usuario') || '').trim();
+  const password = String(fd.get('password') || '').trim();
+  const porcentaje_ganancia = this.num(fd.get('porcentaje_ganancia'), 20);
+  if (!nombre || !owner_name || !usuario || !password) {
+    this.toast('Completa todos los campos del registro.', 'warning');
+    return;
+  }
+  const stores = this.getStores();
+  if (stores.some(s => s.usuario === usuario)) {
+    this.toast('Ese usuario ya existe. Elige otro.', 'danger');
+    return;
+  }
+  const id = `${this.slugify(nombre).slice(0, 18) || 'colmado'}-${Math.random().toString(36).slice(2, 7)}`;
+  const store = {
+    id,
+    nombre,
+    owner_name,
+    tipo_negocio,
+    usuario,
+    password,
+    porcentaje_ganancia,
+    low_stock_threshold: 5,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  stores.push(store);
+  this.setRaw(this.DB_KEYS.stores, stores);
+  this.setSession({ role: 'owner', store_id: store.id, usuario: store.usuario, logged_at: new Date().toISOString() });
+  this.showDashboard();
+  event.target.reset();
+  this.showAuthMode('login');
+  this.toast('Colmado registrado correctamente.', 'success');
+  this.sendTelemetry('store_created', { store_id: store.id, nombre: store.nombre });
+},
+
+logout() {
+  this._sessionStore.removeItem(this.DB_KEYS.session);
+  this.state.cart = [];
+  this.state.activeTab = 'venta';
+  this.stopAdminPolling();
+  if (this.state.adminChart) {
+    this.state.adminChart.destroy();
+    this.state.adminChart = null;
+  }
+  document.getElementById('dashboardScreen').classList.add('hidden');
+  document.getElementById('authScreen').classList.remove('hidden');
+  this.toast('Sesión cerrada.', 'info');
+},
+
+showDashboard() {
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('dashboardScreen').classList.remove('hidden');
+  const session = this.getSession();
+  if (!session) return;
+  this.state.activeTab = session.role === 'admin' ? 'admin' : 'venta';
+  this.renderDashboardShell();
+  this.renderDashboard();
+  if (session.role === 'owner') this.queueStoreSync(session.store_id);
+},
+
+renderDashboardShell() {
+  const session = this.getSession();
+  const root = document.getElementById('dashboardRoot');
+  const showFloatingScan = session && session.role === 'owner';
+  root.innerHTML = `
+    <div class="mx-auto max-w-7xl px-4 py-4 md:px-6 md:py-6">
+      <div class="flex flex-col gap-4">
+        <header class="glass-panel rounded-[2rem] p-4 md:p-6">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="flex items-center gap-4">
+              <div class="relative flex h-20 w-20 items-center justify-center">
+                <div class="coin-mini animate-bounce absolute -top-1 left-1/2 -translate-x-1/2"></div>
+                <div class="text-5xl">🏠</div>
+              </div>
+              <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-amber-200">ColmadoSync Pro Max</h1>
+                <p id="dashboardWelcome" class="muted"></p>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="onlineBadgeShell" class="badge"></span>
+              <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.manualSync()">Sincronizar</button>
+              <button class="pixel-btn pixel-btn-danger" onclick="CSPM.logout()">Salir</button>
+            </div>
+          </div>
+        </header>
+
+        <div id="summaryCards" class="flex flex-wrap gap-4"></div>
+        <div class="glass-panel rounded-[2rem] p-3"><div id="tabButtons" class="flex flex-wrap gap-2"></div></div>
+        <div id="tabContent" class="pb-28"></div>
+      </div>
+    </div>
+    ${showFloatingScan ? `<button id="floatingScanBtn" class="floating-scan" onclick="CSPM.floatingScanAction()" title="Escanear">📷</button>` : ''}
+  `;
+},
+
+renderDashboard() {
+  const session = this.getSession();
+  if (!session) return;
+  const welcome = document.getElementById('dashboardWelcome');
+  if (session.role === 'admin') {
+    welcome.textContent = 'Vista global de todos los colmados registrados.';
+  } else {
+    const store = this.getStoreById(session.store_id);
+    welcome.textContent = `${store?.nombre || 'Tu colmado'} · Dueño: ${store?.owner_name || ''}`;
+  }
+  this.renderConnectivity();
+  this.renderSummaryCards();
+  this.renderTabs();
+  this.renderActiveTab();
+},
+
+renderConnectivity() {
+  const badge = document.getElementById('onlineBadgeShell');
+  if (!badge) return;
+  badge.className = 'badge ' + (navigator.onLine ? 'badge-success' : 'badge-danger');
+  badge.innerHTML = `${navigator.onLine ? '<span class="dot-online"></span> En línea' : '<span class="dot-offline"></span> Offline'}`;
+},
+
+renderSummaryCards() {
+  const session = this.getSession();
+  const cardsHost = document.getElementById('summaryCards');
+  if (!cardsHost || !session) return;
+  let cards = [];
+  if (session.role === 'admin') {
+    const stores = this.getStores();
+    const products = this.getProducts();
+    const sales = this.getSales();
+    const todaySales = this.getTodaySales(sales);
+    cards = [
+      { icon: '🏪', label: 'Tiendas registradas', value: stores.length, hint: 'Colmados y mini markets en el sistema' },
+      { icon: '📦', label: 'Productos globales', value: products.length, hint: 'Todos los productos locales guardados' },
+      { icon: '💸', label: 'Ventas hoy', value: this.money(todaySales.reduce((acc, s) => acc + this.num(s.total), 0)), hint: `${todaySales.length} facturas registradas hoy` },
+      { icon: '☁️', label: 'Nube', value: this.getCloudConfig().enabled ? 'Activa' : 'Desactivada', hint: this.getCloudConfig().enabled ? 'Sincronización remota lista' : 'Actívala en Configuración maestra' }
+    ];
+  } else {
+    const store = this.getStoreById(session.store_id);
+    const stats = this.getStoreStats(session.store_id);
+    cards = [
+      { icon: '📦', label: 'Productos', value: stats.productCount, hint: `Stock total: ${stats.stockTotal}` },
+      { icon: '🚨', label: 'Stock bajo', value: stats.lowStockCount, hint: 'Productos que necesitan reposición' },
+      { icon: '💸', label: 'Ventas hoy', value: this.money(stats.todaySalesValue), hint: `${stats.todaySalesCount} ventas registradas hoy` },
+      { icon: '🚚', label: 'Pedidos pendientes', value: stats.pendingOrdersCount, hint: `Ganancia actual: ${this.num(store?.porcentaje_ganancia, 0)}%` }
+    ];
+  }
+  cardsHost.innerHTML = cards.map(card => `
+    <div class="w-full md:w-1/2 lg:w-1/4">
+      <div class="pixel-card p-5 h-full">
+        <div class="text-3xl">${card.icon}</div>
+        <div class="mt-3 text-sm muted">${this.escapeHtml(card.label)}</div>
+        <div class="mt-1 text-2xl md:text-3xl font-bold text-white">${this.escapeHtml(String(card.value))}</div>
+        <div class="mt-2 text-sm muted">${this.escapeHtml(card.hint)}</div>
+      </div>
+    </div>
+  `).join('');
+},
+
+renderTabs() {
+  const session = this.getSession();
+  const host = document.getElementById('tabButtons');
+  if (!host || !session) return;
+  const tabs = session.role === 'admin'
+    ? [['admin', '🛰️ Monitoreo'], ['inventario', '📦 Inventario'], ['reportes', '📊 Reportes'], ['config', '🛠️ Configuración']]
+    : [['venta', '💸 Venta rápida'], ['inventario', '📦 Inventario'], ['pedidos', '🚚 Pedidos'], ['reportes', '📊 Reportes'], ['config', '⚙️ Configuración']];
+  host.innerHTML = tabs.map(([key, label]) => `<button class="tab-btn ${this.state.activeTab === key ? 'active' : ''}" onclick="CSPM.setActiveTab('${key}')">${label}</button>`).join('');
+},
+
+setActiveTab(tab) {
+  this.state.activeTab = tab;
+  this.renderTabs();
+  this.renderActiveTab();
+},
+
+renderActiveTab() {
+  const host = document.getElementById('tabContent');
+  if (!host) return;
+  this.stopAdminPolling();
+  switch (this.state.activeTab) {
+    case 'venta':
+      host.innerHTML = this.getSalesTabHTML();
+      this.updateSaleSearch();
+      this.renderCart();
+      this.renderRecentSalesMini();
+      break;
+    case 'inventario':
+      host.innerHTML = this.getInventoryTabHTML();
+      this.updateInventoryPreview();
+      this.renderInventoryList();
+      break;
+    case 'pedidos':
+      host.innerHTML = this.getOrdersTabHTML();
+      this.renderSuppliersSelect();
+      this.renderTimeline();
+      break;
+    case 'reportes':
+      host.innerHTML = this.getReportsTabHTML();
+      this.renderReportsTab();
+      break;
+    case 'config':
+      host.innerHTML = this.getConfigTabHTML();
+      this.renderConfigDetails();
+      break;
+    case 'admin':
+      host.innerHTML = this.getAdminTabHTML();
+      this.renderAdminTab();
+      this.startAdminPolling();
+      break;
+    default:
+      host.innerHTML = '';
+  }
+},
+
+getSalesTabHTML() {
+  return `
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_.95fr]">
+      <div class="flex flex-col gap-4">
+        <div class="pixel-card p-5">
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 class="text-2xl font-bold text-white">Venta rápida</h2>
+              <p class="muted">Escanea con la cámara o agrega productos manualmente al carrito.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button class="pixel-btn pixel-btn-gold" onclick="CSPM.openScanner('sale')">📷 Escanear venta</button>
+              <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.setActiveTab('inventario')">➕ Registrar producto</button>
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="pixel-label">Buscar producto para vender</label>
+            <input id="saleSearchInput" class="pixel-input" placeholder="Escribe nombre, código o proveedor" oninput="CSPM.updateSaleSearch()" />
+          </div>
+        </div>
+
+        <div class="pixel-card p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-xl font-semibold text-amber-200">Productos disponibles</h3>
+            <span class="badge badge-info">Toque = agregar</span>
+          </div>
+          <div id="saleSearchResults" class="mt-4 inventory-grid"></div>
+        </div>
+
+        <div class="pixel-card p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-xl font-semibold text-amber-200">Últimas ventas</h3>
+            <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.setActiveTab('reportes')">Ver reportes</button>
+          </div>
+          <div id="recentSalesMini" class="mt-4 space-y-3"></div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="pixel-card p-5 sticky top-4">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white">Carrito</h2>
+              <p class="muted">Suma automática y descuento de stock al cobrar.</p>
+            </div>
+            <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.clearCart()">Vaciar</button>
+          </div>
+          <div id="cartList" class="mt-4 max-h-[420px] overflow-auto pr-1"></div>
+          <div class="mt-4 rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
+            <div class="flex items-center justify-between text-lg">
+              <span class="muted">Total carrito</span>
+              <strong id="cartTotalValue" class="text-2xl text-emerald-300">${this.money(0)}</strong>
+            </div>
+            <button class="pixel-btn pixel-btn-primary w-full mt-4 !py-4 text-lg" onclick="CSPM.checkout()">Cobrar y guardar venta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+},
+
+getInventoryTabHTML() {
+  const session = this.getSession();
+  const stores = this.getStores();
+  return `
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.05fr_.95fr]">
+        <div class="pixel-card p-5">
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 class="text-2xl font-bold text-white">Registro de inventario</h2>
+              <p class="muted">Agrega productos escaneando el código o llenando el formulario.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button class="pixel-btn pixel-btn-gold" onclick="CSPM.openScanner('inventory')">📷 Escanear producto</button>
+              <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.resetInventoryForm()">Limpiar</button>
+            </div>
+          </div>
+
+          <form id="inventoryForm" class="mt-4 space-y-4" onsubmit="CSPM.submitInventoryForm(event)">
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div><label class="pixel-label">Código / ID</label><input id="inventoryId" name="id" class="pixel-input" placeholder="Se puede llenar al escanear" required /></div>
+              <div><label class="pixel-label">Nombre del producto</label><input name="nombre" class="pixel-input" placeholder="Ej. Coca Cola 2L" required /></div>
+              <div><label class="pixel-label">Tipo</label><select id="inventoryType" name="tipo" class="pixel-select" onchange="CSPM.updateInventoryPreview()"><option value="unidad">Unidad</option><option value="pesado">Pesado</option></select></div>
+              <div><label class="pixel-label">Empresa proveedora</label><input name="empresa_proveedora" class="pixel-input" placeholder="Ej. Coca-Cola" /></div>
+              <div><label class="pixel-label">Precio compra / costo por libra</label><input id="inventoryBuyPrice" type="number" step="0.01" name="precio_compra" class="pixel-input" value="0" oninput="CSPM.updateInventoryPreview()" required /></div>
+              <div><label class="pixel-label">Stock / libras disponibles</label><input type="number" step="0.01" name="stock" class="pixel-input" value="0" required /></div>
+              <div><label class="pixel-label">Stock mínimo</label><input type="number" step="0.01" name="stock_minimo" class="pixel-input" value="5" /></div>
+              <div><label class="pixel-label">Fecha de pedido</label><input type="date" name="fecha_pedido" class="pixel-input" /></div>
+              ${session.role === 'admin' ? `<div class="md:col-span-2"><label class="pixel-label">Asignar a tienda</label><select name="store_id" class="pixel-select">${stores.map(s => `<option value="${this.escapeHtml(s.id)}">${this.escapeHtml(s.nombre)}</option>`).join('')}</select></div>` : ''}
+            </div>
+
+            <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
+              <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div><div class="text-lg font-semibold text-amber-200">Precio de venta calculado</div><div class="muted">Aplicando porcentaje de ganancia de la tienda + ITBIS global.</div></div>
+                <div class="text-3xl font-bold text-emerald-300" id="inventorySalePreview">${this.money(0)}</div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <button type="submit" class="pixel-btn pixel-btn-primary">Guardar producto</button>
+              <button type="button" class="pixel-btn pixel-btn-secondary" onclick="CSPM.resetInventoryForm()">Nuevo formulario</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="pixel-card p-5">
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div><h3 class="text-xl font-semibold text-amber-200">Filtros de inventario</h3><p class="muted">Toca un producto para editarlo en pantalla completa.</p></div>
+          </div>
+          <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div><label class="pixel-label">Buscar</label><input id="inventorySearchInput" class="pixel-input" placeholder="Nombre, código o proveedor" oninput="CSPM.applyInventoryFilters()" /></div>
+            <div><label class="pixel-label">Filtrar por proveedor</label><select id="inventorySupplierFilter" class="pixel-select" onchange="CSPM.applyInventoryFilters()"></select></div>
+            ${session.role === 'admin' ? `<div class="md:col-span-2"><label class="pixel-label">Filtrar por tienda</label><select id="inventoryStoreFilter" class="pixel-select" onchange="CSPM.applyInventoryFilters()"><option value="all">Todas las tiendas</option>${stores.map(s => `<option value="${this.escapeHtml(s.id)}">${this.escapeHtml(s.nombre)}</option>`).join('')}</select></div>` : ''}
+          </div>
+        </div>
+      </div>
+
+      <div class="pixel-card p-5">
+        <div class="flex items-center justify-between gap-3"><h3 class="text-xl font-semibold text-amber-200">Lista de productos</h3><span class="badge badge-warning">Stock rojo = poco inventario</span></div>
+        <div id="inventoryList" class="mt-4 inventory-grid"></div>
+      </div>
+    </div>
+  `;
+},
+
+getOrdersTabHTML() {
+  return `
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-[.95fr_1.05fr]">
+      <div class="flex flex-col gap-4">
+        <div class="pixel-card p-5">
+          <h2 class="text-2xl font-bold text-white">Registrar empresa proveedora</h2>
+          <p class="muted">Guarda la empresa, el día de visita y el estado del camión.</p>
+          <form class="mt-4 space-y-4" onsubmit="CSPM.saveSupplier(event)">
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div><label class="pixel-label">Nombre de la empresa</label><input name="nombre" class="pixel-input" placeholder="Ej. Coca-Cola" required /></div>
+              <div><label class="pixel-label">Día de visita</label><input name="dia_visita" class="pixel-input" placeholder="Ej. Lunes" /></div>
+              <div><label class="pixel-label">Próxima visita / llegada</label><input name="proxima_visita" type="date" class="pixel-input" /></div>
+              <div><label class="pixel-label">Estado del camión</label><select name="estado_camion" class="pixel-select"><option value="Pendiente">Pendiente</option><option value="En camino">En camino</option><option value="Entregado">Entregado</option></select></div>
+              <div class="md:col-span-2"><label class="pixel-label">Contacto / nota</label><input name="contacto" class="pixel-input" placeholder="Ej. Ramón 809-000-0000" /></div>
+            </div>
+            <button type="submit" class="pixel-btn pixel-btn-primary">Guardar empresa</button>
+          </form>
+        </div>
+
+        <div class="pixel-card p-5">
+          <h2 class="text-2xl font-bold text-white">Registrar pedido</h2>
+          <p class="muted">Asocia el pedido a una empresa y registra cuándo llega.</p>
+          <form class="mt-4 space-y-4" onsubmit="CSPM.saveOrder(event)">
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div class="md:col-span-2"><label class="pixel-label">Empresa</label><select id="supplierSelectOrder" name="supplier_id" class="pixel-select"></select></div>
+              <div class="md:col-span-2"><label class="pixel-label">Descripción del pedido</label><input name="descripcion" class="pixel-input" placeholder="Ej. Pedido de refrescos 2L" required /></div>
+              <div><label class="pixel-label">Fecha del pedido</label><input name="fecha_pedido" type="date" class="pixel-input" required /></div>
+              <div><label class="pixel-label">Fecha de llegada</label><input name="fecha_llegada" type="date" class="pixel-input" /></div>
+              <div><label class="pixel-label">Estado</label><select name="estado" class="pixel-select"><option value="Pendiente">Pendiente</option><option value="En camino">En camino</option><option value="Entregado">Entregado</option></select></div>
+              <div><label class="pixel-label">Cantidad / nota</label><input name="cantidad" class="pixel-input" placeholder="Ej. 50 cajas" /></div>
+            </div>
+            <button type="submit" class="pixel-btn pixel-btn-primary">Guardar pedido</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="pixel-card p-5">
+        <div class="flex items-center justify-between gap-3">
+          <div><h2 class="text-2xl font-bold text-white">Timeline de pedidos y visitas</h2><p class="muted">Ejemplo: “Hoy viene el de los refrescos”.</p></div>
+          <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.renderTimeline()">Actualizar</button>
+        </div>
+        <div id="timelineWrap" class="mt-4 timeline"></div>
+      </div>
+    </div>
+  `;
+},
+
+getReportsTabHTML() {
+  return `
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4" id="reportKpis"></div>
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.05fr]">
+        <div class="pixel-card p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h2 class="text-2xl font-bold text-white">Productos más vendidos</h2>
+            <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.renderReportsTab()">Refrescar</button>
+          </div>
+          <div id="topProductsList" class="mt-4 space-y-3"></div>
+        </div>
+        <div class="pixel-card p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h2 class="text-2xl font-bold text-white">Historial de ventas</h2>
+            <span class="badge badge-info">Tiempo real local</span>
+          </div>
+          <div id="salesHistoryList" class="mt-4 space-y-3"></div>
+        </div>
+      </div>
+    </div>
+  `;
+},
+
+getConfigTabHTML() {
+  const session = this.getSession();
+  if (session.role === 'admin') {
+    const master = this.getMasterConfig();
+    return `
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_.9fr]">
+        <div class="pixel-card p-5">
+          <h2 class="text-2xl font-bold text-white">Configuración maestra</h2>
+          <p class="muted">Solo el administrador puede modificar ITBIS y parámetros globales.</p>
+          <form id="masterConfigForm" class="mt-4 space-y-4" onsubmit="CSPM.saveMasterConfig(event)">
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div><label class="pixel-label">Usuario admin</label><input name="admin_username" class="pixel-input" value="${this.escapeHtml(master.admin_username)}" required /></div>
+              <div><label class="pixel-label">Contraseña admin</label><input name="admin_password" class="pixel-input" value="${this.escapeHtml(master.admin_password)}" required /></div>
+              <div><label class="pixel-label">ITBIS global (%)</label><input type="number" step="0.01" name="itbis" class="pixel-input" value="${this.num(master.itbis, 18)}" required /></div>
+              <div><label class="pixel-label">Auto sync cada (segundos)</label><input type="number" step="1" min="10" name="auto_sync_seconds" class="pixel-input" value="${this.num(master.auto_sync_seconds, 30)}" /></div>
+              <div class="md:col-span-2"><label class="pixel-label">Webhook de telemetría (opcional)</label><input name="webhook_url" class="pixel-input" value="${this.escapeHtml(master.webhook_url || '')}" placeholder="https://tu-webhook..." /></div>
+              <div class="md:col-span-2"><label class="pixel-label">URL de Firebase Realtime Database (opcional)</label><input name="firebase_db_url" class="pixel-input" value="${this.escapeHtml(master.firebase_db_url || '')}" placeholder="https://tu-proyecto-default-rtdb.firebaseio.com" /></div>
+              <div class="md:col-span-2"><label class="pixel-label">Token / auth de Firebase (opcional)</label><input name="firebase_auth_token" class="pixel-input" value="${this.escapeHtml(master.firebase_auth_token || '')}" placeholder="Deja vacío si tus reglas permiten acceso" /></div>
+              <div class="md:col-span-2 flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
+                <input id="cloudEnabledCheckbox" type="checkbox" ${master.cloud_enabled ? 'checked' : ''} name="cloud_enabled" class="h-5 w-5 accent-amber-400" />
+                <label for="cloudEnabledCheckbox" class="text-lg">Activar sincronización en la nube</label>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="submit" class="pixel-btn pixel-btn-primary">Guardar configuración maestra</button>
+              <button type="button" class="pixel-btn pixel-btn-secondary" onclick="CSPM.testCloudConnection()">Probar nube</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="pixel-card p-5">
+          <h2 class="text-2xl font-bold text-white">Resumen global</h2>
+          <p class="muted">Cambiar el ITBIS recalcula los precios de todas las tiendas guardadas localmente.</p>
+          <div id="configGlobalSummary" class="mt-4 space-y-3"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  const store = this.getCurrentStore();
+  return `
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_.9fr]">
+      <div class="pixel-card p-5">
+        <h2 class="text-2xl font-bold text-white">Configuración del dueño</h2>
+        <p class="muted">Aquí puedes cambiar tu porcentaje de ganancia. El ITBIS lo controla el administrador.</p>
+        <form id="ownerConfigForm" class="mt-4 space-y-4" onsubmit="CSPM.saveOwnerConfig(event)">
+          <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div><label class="pixel-label">Nombre del negocio</label><input name="nombre" class="pixel-input" value="${this.escapeHtml(store?.nombre || '')}" required /></div>
+            <div><label class="pixel-label">Dueño</label><input name="owner_name" class="pixel-input" value="${this.escapeHtml(store?.owner_name || '')}" required /></div>
+            <div><label class="pixel-label">Tipo de negocio</label><select name="tipo_negocio" class="pixel-select"><option value="colmado" ${store?.tipo_negocio === 'colmado' ? 'selected' : ''}>Colmado</option><option value="mini_market" ${store?.tipo_negocio === 'mini_market' ? 'selected' : ''}>Mini market</option><option value="supermercado" ${store?.tipo_negocio === 'supermercado' ? 'selected' : ''}>Supermercado pequeño</option></select></div>
+            <div><label class="pixel-label">Porcentaje de ganancia (%)</label><input type="number" step="0.01" min="0" name="porcentaje_ganancia" class="pixel-input" value="${this.num(store?.porcentaje_ganancia, 20)}" required /></div>
+            <div><label class="pixel-label">Stock mínimo por defecto</label><input type="number" step="0.01" min="0" name="low_stock_threshold" class="pixel-input" value="${this.num(store?.low_stock_threshold, 5)}" /></div>
+            <div><label class="pixel-label">Usuario del negocio</label><input name="usuario" class="pixel-input" value="${this.escapeHtml(store?.usuario || '')}" required /></div>
+            <div class="md:col-span-2"><label class="pixel-label">Contraseña</label><input type="text" name="password" class="pixel-input" value="${this.escapeHtml(store?.password || '')}" required /></div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="submit" class="pixel-btn pixel-btn-primary">Guardar mi configuración</button>
+            <button type="button" class="pixel-btn pixel-btn-secondary" onclick="CSPM.restoreMyStoreFromCloud()">Traer mi tienda desde nube</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="pixel-card p-5">
+        <h2 class="text-2xl font-bold text-white">Estado de sincronización</h2>
+        <div id="ownerConfigSummary" class="mt-4 space-y-3"></div>
+      </div>
+    </div>
+  `;
+},
+
+getAdminTabHTML() {
+  return `
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.05fr_.95fr]">
+        <div class="pixel-card p-5">
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 class="text-2xl font-bold text-white">Monitoreo global</h2>
+              <p class="muted">Qué colmado está vendiendo más en este momento.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.loadAdminSnapshots()">Actualizar</button>
+              <button class="pixel-btn pixel-btn-gold" onclick="CSPM.setActiveTab('config')">Configurar nube</button>
+            </div>
+          </div>
+          <div class="mt-4 rounded-3xl border border-slate-700 bg-slate-950/60 p-4">
+            <canvas id="adminSalesChart" height="120"></canvas>
+          </div>
+        </div>
+
+        <div class="pixel-card p-5">
+          <h2 class="text-2xl font-bold text-white">Ventas en tiempo real</h2>
+          <p class="muted">Feed de ventas recientes por nombre de tienda.</p>
+          <div id="adminLiveFeed" class="mt-4 space-y-3"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[.95fr_1.05fr]">
+        <div class="pixel-card p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h2 class="text-2xl font-bold text-white">Tiendas registradas</h2>
+            <span id="cloudStatusBadge" class="badge badge-info">Cargando...</span>
+          </div>
+          <div id="adminStoreCards" class="mt-4 inventory-grid"></div>
+        </div>
+
+        <div class="pixel-card p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h2 class="text-2xl font-bold text-white">Productos globales</h2>
+            <span class="badge badge-warning">Vista administrador</span>
+          </div>
+          <div class="mt-4"><input id="adminProductFilter" class="pixel-input" placeholder="Filtrar por tienda, nombre o código" oninput="CSPM.renderAdminProductsTable()" /></div>
+          <div id="adminProductsTable" class="mt-4"></div>
+        </div>
+      </div>
+    </div>
+  `;
+},
+
+floatingScanAction() {
+  if (this.state.activeTab === 'inventario') this.openScanner('inventory');
+  else this.openScanner('sale');
+},
+
+getStores() { return this.getRaw(this.DB_KEYS.stores, []); },
+getProducts() { return this.getRaw(this.DB_KEYS.products, []); },
+getSales() { return this.getRaw(this.DB_KEYS.sales, []); },
+getSuppliers() { return this.getRaw(this.DB_KEYS.suppliers, []); },
+getOrders() { return this.getRaw(this.DB_KEYS.orders, []); },
+getMasterConfig() { return this.getRaw(this.DB_KEYS.master, {}); },
+getSession() { try { return JSON.parse(this._sessionStore.getItem(this.DB_KEYS.session) || 'null'); } catch (e) { return null; } },
+setSession(session) { try { this._sessionStore.setItem(this.DB_KEYS.session, JSON.stringify(session)); } catch (e) {} },
+getCurrentStore() { const session = this.getSession(); if (!session || session.role !== 'owner') return null; return this.getStoreById(session.store_id); },
+getStoreById(id) { return this.getStores().find(s => s.id === id) || null; },
+getProductsForStore(storeId) { return this.getProducts().filter(p => p.store_id === storeId); },
+getSuppliersForStore(storeId) { return this.getSuppliers().filter(s => s.store_id === storeId); },
+getOrdersForStore(storeId) { return this.getOrders().filter(o => o.store_id === storeId); },
+getSalesForStore(storeId) { return this.getSales().filter(s => s.store_id === storeId); },
+
+getStoreStats(storeId) {
+  const store = this.getStoreById(storeId);
+  const products = this.getProductsForStore(storeId);
+  const sales = this.getSalesForStore(storeId);
+  const orders = this.getOrdersForStore(storeId);
+  const lowThreshold = this.num(store?.low_stock_threshold, 5);
+  const todaySales = this.getTodaySales(sales);
+  return {
+    productCount: products.length,
+    stockTotal: products.reduce((acc, p) => acc + this.num(p.stock), 0),
+    lowStockCount: products.filter(p => this.num(p.stock) <= this.num(p.stock_minimo, lowThreshold)).length,
+    todaySalesValue: todaySales.reduce((acc, s) => acc + this.num(s.total), 0),
+    todaySalesCount: todaySales.length,
+    pendingOrdersCount: orders.filter(o => String(o.estado || '').toLowerCase() !== 'entregado').length
+  };
+},
+
+getTodaySales(sales) {
+  const today = new Date();
+  const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
+  return sales.filter(s => {
+    const dt = new Date(s.created_at);
+    return dt.getFullYear() === y && dt.getMonth() === m && dt.getDate() === d;
+  });
+},
+
+submitInventoryForm(event) {
+  event.preventDefault();
+  const session = this.getSession();
+  if (!session) return;
+  const fd = new FormData(event.target);
+  const storeId = session.role === 'admin' ? String(fd.get('store_id') || '').trim() : session.store_id;
+  if (!storeId) { this.toast('Selecciona una tienda para guardar el producto.', 'warning'); return; }
+  const id = String(fd.get('id') || '').trim();
+  const nombre = String(fd.get('nombre') || '').trim();
+  if (!id || !nombre) { this.toast('El código y el nombre del producto son obligatorios.', 'warning'); return; }
+
+  const products = this.getProducts();
+  const idx = products.findIndex(p => p.store_id === storeId && p.id === id);
+  const product = idx >= 0 ? products[idx] : {};
+  product.id = id;
+  product.nombre = nombre;
+  product.tipo = String(fd.get('tipo') || 'unidad');
+  product.precio_compra = this.num(fd.get('precio_compra'), 0);
+  product.precio_venta = this.calculateSalePrice(product.precio_compra, storeId);
+  product.stock = this.num(fd.get('stock'), 0);
+  product.stock_minimo = this.num(fd.get('stock_minimo'), 5);
+  product.store_id = storeId;
+  product.empresa_proveedora = String(fd.get('empresa_proveedora') || '').trim();
+  product.fecha_pedido = String(fd.get('fecha_pedido') || '');
+  product.valor_libra = product.tipo === 'pesado' ? product.precio_venta : null;
+  product.updated_at = new Date().toISOString();
+  if (!product.created_at) product.created_at = product.updated_at;
+
+  if (idx >= 0) products.splice(idx, 1, product);
+  else products.push(product);
+  this.setRaw(this.DB_KEYS.products, products);
+  this.resetInventoryForm(false);
+  this.updateInventoryPreview();
+  this.renderSummaryCards();
+  this.renderInventoryList();
+  this.toast(idx >= 0 ? 'Producto actualizado.' : 'Producto guardado en inventario.', 'success');
+  this.sendTelemetry('product_saved', { store_id: storeId, product_id: product.id, nombre: product.nombre });
+  this.queueStoreSync(storeId);
+},
+
+resetInventoryForm(showToast = true) {
+  const form = document.getElementById('inventoryForm');
+  if (form) form.reset();
+  const priceInput = document.getElementById('inventoryBuyPrice');
+  if (priceInput) priceInput.value = '0';
+  const type = document.getElementById('inventoryType');
+  if (type) type.value = 'unidad';
+  this.updateInventoryPreview();
+  if (showToast) this.toast('Formulario listo para un nuevo producto.', 'info');
+},
+
+updateInventoryPreview() {
+  const price = this.num(document.getElementById('inventoryBuyPrice')?.value, 0);
+  const session = this.getSession();
+  let storeId = session?.role === 'owner' ? session.store_id : document.querySelector('#inventoryForm [name="store_id"]')?.value;
+  if (!storeId && session?.role === 'admin') storeId = this.getStores()[0]?.id || '';
+  const salePrice = this.calculateSalePrice(price, storeId);
+  const preview = document.getElementById('inventorySalePreview');
+  if (preview) preview.textContent = this.money(salePrice);
+},
+
+applyInventoryFilters() {
+  this.state.inventorySearch = String(document.getElementById('inventorySearchInput')?.value || '').trim().toLowerCase();
+  this.state.inventorySupplier = String(document.getElementById('inventorySupplierFilter')?.value || 'all');
+  this.state.inventoryStoreFilter = String(document.getElementById('inventoryStoreFilter')?.value || 'all');
+  this.renderInventoryList();
+},
+
+renderInventoryList() {
+  const session = this.getSession();
+  const host = document.getElementById('inventoryList');
+  if (!host || !session) return;
+  let products = session.role === 'admin' ? this.getProducts() : this.getProductsForStore(session.store_id);
+
+  const suppliers = Array.from(new Set(products.map(p => p.empresa_proveedora).filter(Boolean))).sort((a,b)=>a.localeCompare(b));
+  const supplierSelect = document.getElementById('inventorySupplierFilter');
+  if (supplierSelect) {
+    const current = supplierSelect.value || 'all';
+    supplierSelect.innerHTML = `<option value="all">Todos los proveedores</option>` + suppliers.map(s => `<option value="${this.escapeHtml(s)}">${this.escapeHtml(s)}</option>`).join('');
+    supplierSelect.value = suppliers.includes(current) ? current : 'all';
+  }
+
+  const q = (this.state.inventorySearch || '').trim();
+  const supplier = this.state.inventorySupplier || 'all';
+  const storeFilter = this.state.inventoryStoreFilter || 'all';
+  if (q) {
+    products = products.filter(p =>
+      String(p.nombre || '').toLowerCase().includes(q) ||
+      String(p.id || '').toLowerCase().includes(q) ||
+      String(p.empresa_proveedora || '').toLowerCase().includes(q) ||
+      String(this.getStoreById(p.store_id)?.nombre || '').toLowerCase().includes(q)
+    );
+  }
+  if (supplier !== 'all') products = products.filter(p => String(p.empresa_proveedora || '') === supplier);
+  if (session.role === 'admin' && storeFilter !== 'all') products = products.filter(p => p.store_id === storeFilter);
+
+  if (!products.length) {
+    host.innerHTML = `<div class="empty-state">No hay productos que coincidan con el filtro actual.</div>`;
+    return;
+  }
+
+  host.innerHTML = products.sort((a,b)=>String(a.nombre).localeCompare(String(b.nombre))).map(product => {
+    const store = this.getStoreById(product.store_id);
+    const low = this.num(product.stock) <= this.num(product.stock_minimo, store?.low_stock_threshold || 5);
+    return `
+      <button class="pixel-card p-4 text-left transition hover:-translate-y-1" onclick="CSPM.openProductModal('${this.escapeJs(product.store_id)}','${this.escapeJs(product.id)}')">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="text-xl font-semibold text-white">${this.escapeHtml(product.nombre)}</div>
+            <div class="mt-1 text-sm muted">Código: ${this.escapeHtml(product.id)}</div>
+          </div>
+          <span class="badge ${low ? 'badge-danger' : 'badge-success'}">${low ? 'Stock bajo' : 'OK'}</span>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+          <div class="rounded-2xl bg-slate-950/60 p-3"><div class="muted">Venta</div><div class="mt-1 text-lg font-bold text-emerald-300">${this.money(product.precio_venta)}</div></div>
+          <div class="rounded-2xl bg-slate-950/60 p-3"><div class="muted">${product.tipo === 'pesado' ? 'Lb disponibles' : 'Stock'}</div><div class="mt-1 text-lg font-bold ${low ? 'text-rose-300' : 'text-white'}">${this.num(product.stock)}</div></div>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-2 text-sm">
+          <span class="badge badge-info">${this.escapeHtml(product.tipo)}</span>
+          ${product.empresa_proveedora ? `<span class="badge">${this.escapeHtml(product.empresa_proveedora)}</span>` : ''}
+          ${session.role === 'admin' ? `<span class="badge badge-warning">${this.escapeHtml(store?.nombre || product.store_id)}</span>` : ''}
+        </div>
+      </button>
+    `;
+  }).join('');
+},
+
+openProductModal(storeId, productId) {
+  const product = this.getProducts().find(p => p.store_id === storeId && p.id === productId);
+  if (!product) { this.toast('No se encontró ese producto.', 'danger'); return; }
+  const store = this.getStoreById(storeId);
+  const card = document.getElementById('productModalCard');
+  card.innerHTML = `
+    <div class="p-5 md:p-6">
+      <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div><h3 class="text-3xl font-bold text-amber-200">Editar producto</h3><p class="muted">Modal móvil de pantalla completa pensado para tocar con el dedo.</p></div>
+        <div class="flex flex-wrap gap-2">
+          <button class="pixel-btn pixel-btn-gold" onclick="CSPM.openQrModal('${this.escapeJs(storeId)}','${this.escapeJs(productId)}')">🔳 Generar QR</button>
+          <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.closeProductModal()">Cerrar</button>
+        </div>
+      </div>
+
+      <form class="mt-5 space-y-4" onsubmit="CSPM.saveProductModal(event, '${this.escapeJs(storeId)}', '${this.escapeJs(productId)}')">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div><label class="pixel-label">Código / ID</label><input name="id" class="pixel-input text-xl" value="${this.escapeHtml(product.id)}" required /></div>
+          <div><label class="pixel-label">Nombre</label><input name="nombre" class="pixel-input text-xl" value="${this.escapeHtml(product.nombre)}" required /></div>
+          <div><label class="pixel-label">Tipo</label><select name="tipo" class="pixel-select text-xl"><option value="unidad" ${product.tipo === 'unidad' ? 'selected' : ''}>Unidad</option><option value="pesado" ${product.tipo === 'pesado' ? 'selected' : ''}>Pesado</option></select></div>
+          <div><label class="pixel-label">Proveedor</label><input name="empresa_proveedora" class="pixel-input text-xl" value="${this.escapeHtml(product.empresa_proveedora || '')}" /></div>
+          <div><label class="pixel-label">Precio compra / costo por libra</label><input id="modalBuyPrice" type="number" step="0.01" name="precio_compra" class="pixel-input text-xl" value="${this.num(product.precio_compra)}" oninput="CSPM.updateProductModalPrice('${this.escapeJs(storeId)}')" /></div>
+          <div><label class="pixel-label">${product.tipo === 'pesado' ? 'Libras disponibles' : 'Stock actual'}</label><input type="number" step="0.01" name="stock" class="pixel-input text-xl" value="${this.num(product.stock)}" /></div>
+          <div><label class="pixel-label">Stock mínimo</label><input type="number" step="0.01" name="stock_minimo" class="pixel-input text-xl" value="${this.num(product.stock_minimo, store?.low_stock_threshold || 5)}" /></div>
+          <div><label class="pixel-label">Fecha pedido</label><input type="date" name="fecha_pedido" class="pixel-input text-xl" value="${this.escapeHtml(product.fecha_pedido || '')}" /></div>
+        </div>
+
+        <div class="rounded-[1.5rem] border border-slate-700 bg-slate-950/60 p-4">
+          <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div><div class="text-lg font-semibold text-amber-200">Precio venta recalculado</div><div class="muted">Ganancia de ${this.num(store?.porcentaje_ganancia, 0)}% + ITBIS global ${this.num(this.getMasterConfig().itbis, 18)}%</div></div>
+            <div id="modalPricePreview" class="text-3xl font-bold text-emerald-300">${this.money(this.calculateSalePrice(product.precio_compra, storeId))}</div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button type="submit" class="pixel-btn pixel-btn-primary !py-4">Guardar cambios</button>
+          <button type="button" class="pixel-btn pixel-btn-danger !py-4" onclick="CSPM.deleteProduct('${this.escapeJs(storeId)}','${this.escapeJs(productId)}')">Eliminar producto</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.getElementById('productModal').classList.remove('hidden');
+},
+
+closeProductModal() { document.getElementById('productModal').classList.add('hidden'); },
+
+updateProductModalPrice(storeId) {
+  const value = this.num(document.getElementById('modalBuyPrice')?.value, 0);
+  const preview = document.getElementById('modalPricePreview');
+  if (preview) preview.textContent = this.money(this.calculateSalePrice(value, storeId));
+},
+
+saveProductModal(event, originalStoreId, originalProductId) {
+  event.preventDefault();
+  const fd = new FormData(event.target);
+  const products = this.getProducts();
+  const idx = products.findIndex(p => p.store_id === originalStoreId && p.id === originalProductId);
+  if (idx < 0) { this.toast('El producto ya no existe.', 'danger'); return; }
+  const product = products[idx];
+  product.id = String(fd.get('id') || '').trim();
+  product.nombre = String(fd.get('nombre') || '').trim();
+  product.tipo = String(fd.get('tipo') || 'unidad');
+  product.empresa_proveedora = String(fd.get('empresa_proveedora') || '').trim();
+  product.precio_compra = this.num(fd.get('precio_compra'), 0);
+  product.precio_venta = this.calculateSalePrice(product.precio_compra, originalStoreId);
+  product.valor_libra = product.tipo === 'pesado' ? product.precio_venta : null;
+  product.stock = this.num(fd.get('stock'), 0);
+  product.stock_minimo = this.num(fd.get('stock_minimo'), 5);
+  product.fecha_pedido = String(fd.get('fecha_pedido') || '');
+  product.updated_at = new Date().toISOString();
+  products[idx] = product;
+  this.setRaw(this.DB_KEYS.products, products);
+  this.closeProductModal();
+  this.renderInventoryList();
+  this.renderSummaryCards();
+  this.toast('Producto actualizado desde el modal.', 'success');
+  this.queueStoreSync(originalStoreId);
+},
+
+deleteProduct(storeId, productId) {
+  if (!confirm('¿Seguro que quieres eliminar este producto?')) return;
+  this.setRaw(this.DB_KEYS.products, this.getProducts().filter(p => !(p.store_id === storeId && p.id === productId)));
+  this.closeProductModal();
+  this.renderInventoryList();
+  this.renderSummaryCards();
+  this.toast('Producto eliminado.', 'warning');
+  this.sendTelemetry('product_deleted', { store_id: storeId, product_id: productId });
+  this.queueStoreSync(storeId);
+},
+
+updateSaleSearch() {
+  const input = document.getElementById('saleSearchInput');
+  this.state.saleSearch = String(input?.value || '').trim().toLowerCase();
+  const store = this.getCurrentStore();
+  const host = document.getElementById('saleSearchResults');
+  if (!host || !store) return;
+  const products = this.getProductsForStore(store.id).filter(p => {
+    const q = this.state.saleSearch;
+    if (!q) return true;
+    return String(p.nombre || '').toLowerCase().includes(q) || String(p.id || '').toLowerCase().includes(q) || String(p.empresa_proveedora || '').toLowerCase().includes(q);
+  }).slice(0,24);
+  if (!products.length) { host.innerHTML = `<div class="empty-state">No se encontraron productos para vender.</div>`; return; }
+  host.innerHTML = products.map(product => `
+    <button class="pixel-card p-4 text-left transition hover:-translate-y-1" onclick="CSPM.addProductToCartById('${this.escapeJs(product.id)}')">
+      <div class="flex items-start justify-between gap-3">
+        <div><div class="text-xl font-semibold text-white">${this.escapeHtml(product.nombre)}</div><div class="mt-1 text-sm muted">${this.escapeHtml(product.id)}</div></div>
+        <span class="badge ${this.num(product.stock) <= this.num(product.stock_minimo, 5) ? 'badge-danger' : 'badge-success'}">${this.num(product.stock)}</span>
+      </div>
+      <div class="mt-4 flex items-center justify-between">
+        <div class="text-lg font-bold text-emerald-300">${this.money(product.precio_venta)}</div>
+        <span class="badge badge-info">${this.escapeHtml(product.tipo)}</span>
+      </div>
+    </button>
+  `).join('');
+},
+
+addProductToCartById(productId, customData = null) {
+  const store = this.getCurrentStore();
+  if (!store) return;
+  const product = this.getProducts().find(p => p.store_id === store.id && p.id === productId);
+  if (!product) { this.toast('Ese producto no existe en tu tienda.', 'danger'); return; }
+
+  if (customData && customData.kind === 'weight-label') {
+    this.state.cart.push({ line_id: this.uid('LINE'), product_id: product.id, nombre: product.nombre, tipo: 'pesado', qty: 1, weight: this.num(customData.w, 0), unit_price: this.num(customData.p, product.precio_venta), total: this.num(customData.tp, 0), proveedor: product.empresa_proveedora || '' });
+    this.renderCart(); this.toast('Producto pesado agregado con el precio del QR.', 'success'); return;
+  }
+  if (customData && customData.kind === 'price-label') {
+    this.state.cart.push({ line_id: this.uid('LINE'), product_id: product.id, nombre: product.nombre, tipo: 'unidad', qty: 1, weight: null, unit_price: this.num(customData.p, product.precio_venta), total: this.num(customData.p, product.precio_venta), proveedor: product.empresa_proveedora || '' });
+    this.renderCart(); this.toast('Producto agregado con precio del QR.', 'success'); return;
+  }
+
+  if (product.tipo === 'pesado') {
+    const weight = Number(prompt(`Ingrese el peso en libras para ${product.nombre}`, '1'));
+    if (!Number.isFinite(weight) || weight <= 0) { this.toast('Peso inválido. No se agregó al carrito.', 'warning'); return; }
+    const total = this.round2(this.num(product.precio_venta) * weight);
+    this.state.cart.push({ line_id: this.uid('LINE'), product_id: product.id, nombre: product.nombre, tipo: 'pesado', qty: 1, weight, unit_price: this.num(product.precio_venta), total, proveedor: product.empresa_proveedora || '' });
+    this.renderCart(); this.toast('Producto pesado agregado al carrito.', 'success'); return;
+  }
+
+  const existing = this.state.cart.find(line => line.product_id === product.id && line.tipo === 'unidad' && !line.custom_price);
+  if (existing) { existing.qty += 1; existing.total = this.round2(existing.qty * existing.unit_price); }
+  else this.state.cart.push({ line_id: this.uid('LINE'), product_id: product.id, nombre: product.nombre, tipo: 'unidad', qty: 1, weight: null, unit_price: this.num(product.precio_venta), total: this.num(product.precio_venta), proveedor: product.empresa_proveedora || '' });
+  this.renderCart();
+  this.toast('Producto agregado al carrito.', 'success');
+},
+
+renderCart() {
+  const host = document.getElementById('cartList');
+  const totalNode = document.getElementById('cartTotalValue');
+  if (!host || !totalNode) return;
+  if (!this.state.cart.length) {
+    host.innerHTML = `<div class="empty-state">Tu carrito está vacío. Escanea o toca un producto para vender.</div>`;
+    totalNode.textContent = this.money(0);
+    return;
+  }
+  host.innerHTML = this.state.cart.map(line => `
+    <div class="sale-line">
+      <div class="min-w-0">
+        <div class="text-lg font-semibold text-white">${this.escapeHtml(line.nombre)}</div>
+        <div class="mt-1 text-sm muted">${line.tipo === 'pesado' ? `${line.weight} lb × ${this.money(line.unit_price)}` : `${line.qty} × ${this.money(line.unit_price)}`}</div>
+      </div>
+      <div class="text-right shrink-0">
+        <div class="text-xl font-bold text-emerald-300">${this.money(line.total)}</div>
+        <div class="mt-2 flex justify-end gap-2">
+          ${line.tipo === 'unidad' ? `<button class="pixel-btn pixel-btn-secondary !px-3 !py-2" onclick="CSPM.changeLineQty('${this.escapeJs(line.line_id)}', -1)">−</button><button class="pixel-btn pixel-btn-secondary !px-3 !py-2" onclick="CSPM.changeLineQty('${this.escapeJs(line.line_id)}', 1)">+</button>` : ''}
+          <button class="pixel-btn pixel-btn-danger !px-3 !py-2" onclick="CSPM.removeCartLine('${this.escapeJs(line.line_id)}')">✕</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  totalNode.textContent = this.money(this.state.cart.reduce((acc, line) => acc + this.num(line.total), 0));
+},
+
+changeLineQty(lineId, delta) {
+  const line = this.state.cart.find(item => item.line_id === lineId);
+  if (!line) return;
+  line.qty += delta;
+  if (line.qty <= 0) this.state.cart = this.state.cart.filter(item => item.line_id !== lineId);
+  else line.total = this.round2(line.qty * line.unit_price);
+  this.renderCart();
+},
+
+removeCartLine(lineId) { this.state.cart = this.state.cart.filter(item => item.line_id !== lineId); this.renderCart(); },
+clearCart() { this.state.cart = []; this.renderCart(); },
+
+checkout() {
+  const store = this.getCurrentStore();
+  if (!store) return;
+  if (!this.state.cart.length) { this.toast('No hay productos en el carrito.', 'warning'); return; }
+
+  const products = this.getProducts();
+  const needs = new Map();
+  for (const line of this.state.cart) {
+    const amount = line.tipo === 'pesado' ? this.num(line.weight) : this.num(line.qty);
+    needs.set(line.product_id, (needs.get(line.product_id) || 0) + amount);
+  }
+
+  for (const [productId, needed] of needs.entries()) {
+    const product = products.find(p => p.store_id === store.id && p.id === productId);
+    if (!product) { this.toast(`Falta el producto ${productId} en inventario.`, 'danger'); return; }
+    if (this.num(product.stock) < this.num(needed)) { this.toast(`Stock insuficiente para ${product.nombre}.`, 'danger'); return; }
+  }
+
+  for (const [productId, needed] of needs.entries()) {
+    const idx = products.findIndex(p => p.store_id === store.id && p.id === productId);
+    if (idx >= 0) {
+      products[idx].stock = this.round2(this.num(products[idx].stock) - this.num(needed));
+      products[idx].updated_at = new Date().toISOString();
+    }
+  }
+
+  const total = this.round2(this.state.cart.reduce((acc, line) => acc + this.num(line.total), 0));
+  const sale = {
+    id: this.uid('SALE'),
+    store_id: store.id,
+    store_nombre: store.nombre,
+    total,
+    subtotal: total,
+    created_at: new Date().toISOString(),
+    item_count: this.state.cart.length,
+    gain_rate: this.num(store.porcentaje_ganancia, 0),
+    itbis_rate: this.num(this.getMasterConfig().itbis, 18),
+    items: this.state.cart.map(line => ({ ...line }))
+  };
+
+  const sales = this.getSales();
+  sales.unshift(sale);
+  this.setRaw(this.DB_KEYS.products, products);
+  this.setRaw(this.DB_KEYS.sales, sales);
+  this.sendTelemetry('sale_created', { store_id: store.id, sale_id: sale.id, total: sale.total, items: sale.item_count });
+  this.toast(`Venta guardada por ${this.money(total)}.`, 'success');
+  this.state.cart = [];
+  this.renderCart();
+  this.renderSummaryCards();
+  this.renderRecentSalesMini();
+  if (this.state.activeTab === 'reportes') this.renderReportsTab();
+  if (this.state.activeTab === 'inventario') this.renderInventoryList();
+  this.queueStoreSync(store.id);
+},
+
+renderRecentSalesMini() {
+  const host = document.getElementById('recentSalesMini');
+  const store = this.getCurrentStore();
+  if (!host || !store) return;
+  const sales = this.getSalesForStore(store.id).slice(0, 6);
+  if (!sales.length) { host.innerHTML = `<div class="empty-state">Aún no hay ventas registradas.</div>`; return; }
+  host.innerHTML = sales.map(sale => `<div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="flex items-center justify-between gap-3"><div><div class="text-lg font-semibold text-white">${this.money(sale.total)}</div><div class="muted text-sm">${this.formatDateTime(sale.created_at)}</div></div><span class="badge badge-success">${sale.item_count} ítems</span></div></div>`).join('');
+},
+
+saveSupplier(event) {
+  event.preventDefault();
+  const store = this.getCurrentStore();
+  if (!store) return;
+  const fd = new FormData(event.target);
+  const supplier = {
+    id: this.uid('SUP'),
+    store_id: store.id,
+    nombre: String(fd.get('nombre') || '').trim(),
+    dia_visita: String(fd.get('dia_visita') || '').trim(),
+    proxima_visita: String(fd.get('proxima_visita') || ''),
+    estado_camion: String(fd.get('estado_camion') || 'Pendiente'),
+    contacto: String(fd.get('contacto') || '').trim(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  if (!supplier.nombre) { this.toast('Escribe el nombre de la empresa.', 'warning'); return; }
+  const suppliers = this.getSuppliers();
+  suppliers.unshift(supplier);
+  this.setRaw(this.DB_KEYS.suppliers, suppliers);
+  event.target.reset();
+  this.renderSuppliersSelect();
+  this.renderTimeline();
+  this.renderSummaryCards();
+  this.toast('Empresa proveedora guardada.', 'success');
+  this.queueStoreSync(store.id);
+},
+
+saveOrder(event) {
+  event.preventDefault();
+  const store = this.getCurrentStore();
+  if (!store) return;
+  const fd = new FormData(event.target);
+  const supplierId = String(fd.get('supplier_id') || '').trim();
+  const supplier = this.getSuppliers().find(s => s.id === supplierId && s.store_id === store.id);
+  const order = {
+    id: this.uid('ORD'),
+    store_id: store.id,
+    supplier_id: supplierId,
+    empresa: supplier?.nombre || 'Proveedor',
+    descripcion: String(fd.get('descripcion') || '').trim(),
+    cantidad: String(fd.get('cantidad') || '').trim(),
+    fecha_pedido: String(fd.get('fecha_pedido') || ''),
+    fecha_llegada: String(fd.get('fecha_llegada') || ''),
+    estado: String(fd.get('estado') || 'Pendiente'),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  if (!order.descripcion) { this.toast('Describe el pedido.', 'warning'); return; }
+  const orders = this.getOrders();
+  orders.unshift(order);
+  this.setRaw(this.DB_KEYS.orders, orders);
+  event.target.reset();
+  this.renderTimeline();
+  this.renderSummaryCards();
+  this.toast('Pedido guardado correctamente.', 'success');
+  this.queueStoreSync(store.id);
+},
+
+renderSuppliersSelect() {
+  const select = document.getElementById('supplierSelectOrder');
+  const store = this.getCurrentStore();
+  if (!select || !store) return;
+  const suppliers = this.getSuppliersForStore(store.id);
+  select.innerHTML = suppliers.length ? suppliers.map(s => `<option value="${this.escapeHtml(s.id)}">${this.escapeHtml(s.nombre)}</option>`).join('') : `<option value="">No hay empresas registradas todavía</option>`;
+},
+
+renderTimeline() {
+  const host = document.getElementById('timelineWrap');
+  const store = this.getCurrentStore();
+  if (!host || !store) return;
+  const suppliers = this.getSuppliersForStore(store.id).map(item => ({
+    empresa: item.nombre,
+    title: item.proxima_visita ? `${this.relativeDay(item.proxima_visita)} viene ${item.nombre}` : `${item.nombre} visita ${item.dia_visita || 'sin fecha'}`,
+    subtitle: `${item.estado_camion} · Día de visita: ${item.dia_visita || 'No definido'}`,
+    date: item.proxima_visita || item.updated_at,
+    raw: item
+  }));
+  const orders = this.getOrdersForStore(store.id).map(item => ({
+    empresa: item.empresa,
+    title: item.fecha_llegada ? `${this.relativeDay(item.fecha_llegada)} llega ${item.descripcion}` : item.descripcion,
+    subtitle: `${item.estado} · Pedido: ${item.fecha_pedido || 'sin fecha'}${item.cantidad ? ' · ' + item.cantidad : ''}`,
+    date: item.fecha_llegada || item.fecha_pedido || item.updated_at,
+    raw: item
+  }));
+  const items = [...suppliers, ...orders].sort((a,b) => new Date(a.date || 0) - new Date(b.date || 0));
+  if (!items.length) { host.innerHTML = `<div class="empty-state">No hay empresas ni pedidos registrados todavía.</div>`; return; }
+  host.innerHTML = items.map(item => `
+    <div class="timeline-item">
+      <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
+        <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+          <div><div class="text-xl font-semibold text-white">${this.escapeHtml(item.title)}</div><div class="mt-2 muted">${this.escapeHtml(item.subtitle)}</div></div>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge ${String(item.raw.estado || item.raw.estado_camion || '').toLowerCase().includes('entregado') ? 'badge-success' : String(item.raw.estado || item.raw.estado_camion || '').toLowerCase().includes('camino') ? 'badge-warning' : 'badge-info'}">${this.escapeHtml(item.raw.estado || item.raw.estado_camion || 'Pendiente')}</span>
+            <span class="badge">${this.escapeHtml(item.empresa)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+},
+
+      renderReportsTab() {
+        const hostKpis = document.getElementById('reportKpis');
+        const topProductsHost = document.getElementById('topProductsList');
+        const salesHistoryHost = document.getElementById('salesHistoryList');
+        const session = this.getSession();
+        if (!hostKpis || !topProductsHost || !salesHistoryHost || !session) return;
+
+        const sales = session.role === 'admin' ? this.getSales() : this.getSalesForStore(session.store_id);
+        const products = session.role === 'admin' ? this.getProducts() : this.getProductsForStore(session.store_id);
+        const todaySales = this.getTodaySales(sales);
+        const todayTotal = todaySales.reduce((acc, s) => acc + this.num(s.total), 0);
+        const productMap = new Map();
+        sales.forEach(sale => (sale.items || []).forEach(item => {
+          const key = `${item.product_id}|${item.nombre}`;
+          const entry = productMap.get(key) || { nombre: item.nombre, product_id: item.product_id, qty: 0, total: 0 };
+          entry.qty += item.tipo === 'pesado' ? this.num(item.weight) : this.num(item.qty, 1);
+          entry.total += this.num(item.total);
+          productMap.set(key, entry);
+        }));
+        const topProducts = Array.from(productMap.values()).sort((a,b)=>b.total-a.total).slice(0,8);
+        const lowStock = products.filter(p => {
+          const store = this.getStoreById(p.store_id);
+          return this.num(p.stock) <= this.num(p.stock_minimo, store?.low_stock_threshold || 5);
+        }).length;
+        const kpis = [['💸','Ventas hoy',this.money(todayTotal)],['🧾','Facturas hoy',todaySales.length],['📦','Productos',products.length],['🚨','Stock bajo',lowStock]];
+        hostKpis.innerHTML = kpis.map(([icon,label,value]) => `<div class="pixel-card p-5"><div class="text-3xl">${icon}</div><div class="mt-2 text-sm muted">${label}</div><div class="mt-1 text-3xl font-bold text-white">${this.escapeHtml(String(value))}</div></div>`).join('');
+        topProductsHost.innerHTML = topProducts.length ? topProducts.map((item,idx) => `<div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="flex items-center justify-between gap-3"><div><div class="text-lg font-semibold text-white">#${idx+1} · ${this.escapeHtml(item.nombre)}</div><div class="muted text-sm">Código: ${this.escapeHtml(item.product_id)}</div></div><div class="text-right"><div class="text-lg font-bold text-emerald-300">${this.money(item.total)}</div><div class="muted text-sm">Movido: ${this.num(item.qty)}</div></div></div></div>`).join('') : `<div class="empty-state">Todavía no hay ventas para calcular un ranking.</div>`;
+        salesHistoryHost.innerHTML = sales.length ? sales.slice(0,12).map(sale => `<div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="flex items-center justify-between gap-3"><div><div class="text-lg font-semibold text-white">${this.money(sale.total)}</div><div class="muted text-sm">${this.formatDateTime(sale.created_at)}</div>${session.role === 'admin' ? `<div class="muted text-sm">Tienda: ${this.escapeHtml(sale.store_nombre || sale.store_id)}</div>` : ''}</div><span class="badge badge-success">${this.num(sale.item_count)} ítems</span></div></div>`).join('') : `<div class="empty-state">Todavía no hay historial de ventas.</div>`;
+      },
+
+      renderConfigDetails() {
+        const session = this.getSession();
+        if (!session) return;
+        if (session.role === 'admin') {
+          const host = document.getElementById('configGlobalSummary');
+          if (!host) return;
+          host.innerHTML = `
+            <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="text-lg font-semibold text-white">Tiendas</div><div class="mt-2 text-3xl font-bold text-amber-200">${this.getStores().length}</div></div>
+            <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="text-lg font-semibold text-white">Productos</div><div class="mt-2 text-3xl font-bold text-emerald-300">${this.getProducts().length}</div></div>
+            <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="text-lg font-semibold text-white">Ventas registradas</div><div class="mt-2 text-3xl font-bold text-sky-300">${this.getSales().length}</div></div>
+            <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="text-lg font-semibold text-white">Modo nube</div><div class="mt-2 text-xl font-bold ${this.getCloudConfig().enabled ? 'text-emerald-300' : 'text-rose-300'}">${this.getCloudConfig().enabled ? 'Activo' : 'Desactivado'}</div></div>
+          `;
+        } else {
+          const host = document.getElementById('ownerConfigSummary');
+          const store = this.getCurrentStore();
+          if (!host || !store) return;
+          const cloud = this.getCloudConfig();
+          const stats = this.getStoreStats(store.id);
+          host.innerHTML = `
+            <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="text-lg font-semibold text-white">ITBIS global</div><div class="mt-2 text-3xl font-bold text-amber-200">${this.num(this.getMasterConfig().itbis,18)}%</div></div>
+            <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="text-lg font-semibold text-white">Productos con stock bajo</div><div class="mt-2 text-3xl font-bold text-rose-300">${stats.lowStockCount}</div></div>
+            <div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="text-lg font-semibold text-white">Nube</div><div class="mt-2 text-xl font-bold ${cloud.enabled ? 'text-emerald-300' : 'text-rose-300'}">${cloud.enabled ? 'Configurada' : 'No configurada'}</div><div class="muted mt-2">Sin conexión, el sistema sigue guardando localmente.</div></div>
+          `;
+        }
+      },
+
+      saveOwnerConfig(event) {
+        event.preventDefault();
+        const store = this.getCurrentStore();
+        if (!store) return;
+        const fd = new FormData(event.target);
+        const stores = this.getStores();
+        const idx = stores.findIndex(s => s.id === store.id);
+        if (idx < 0) return;
+        stores[idx] = {
+          ...stores[idx],
+          nombre: String(fd.get('nombre') || '').trim(),
+          owner_name: String(fd.get('owner_name') || '').trim(),
+          tipo_negocio: String(fd.get('tipo_negocio') || 'colmado'),
+          porcentaje_ganancia: this.num(fd.get('porcentaje_ganancia'), 20),
+          low_stock_threshold: this.num(fd.get('low_stock_threshold'), 5),
+          usuario: String(fd.get('usuario') || '').trim(),
+          password: String(fd.get('password') || '').trim(),
+          updated_at: new Date().toISOString()
+        };
+        this.setRaw(this.DB_KEYS.stores, stores);
+        this.recalculatePricesForStore(store.id);
+        this.renderDashboard();
+        this.toast('Configuración del colmado guardada.', 'success');
+        this.queueStoreSync(store.id);
+      },
+
+      saveMasterConfig(event) {
+        event.preventDefault();
+        const fd = new FormData(event.target);
+        const master = this.getMasterConfig();
+        this.setRaw(this.DB_KEYS.master, {
+          ...master,
+          admin_username: String(fd.get('admin_username') || '').trim(),
+          admin_password: String(fd.get('admin_password') || '').trim(),
+          itbis: this.num(fd.get('itbis'), 18),
+          auto_sync_seconds: this.num(fd.get('auto_sync_seconds'), 30),
+          webhook_url: String(fd.get('webhook_url') || '').trim(),
+          firebase_db_url: String(fd.get('firebase_db_url') || '').trim(),
+          firebase_auth_token: String(fd.get('firebase_auth_token') || '').trim(),
+          cloud_enabled: !!fd.get('cloud_enabled'),
+          updated_at: new Date().toISOString()
+        });
+        this.recalculateAllPrices();
+        this.renderDashboard();
+        this.toast('Configuración maestra actualizada.', 'success');
+      },
+
+      recalculatePricesForStore(storeId) {
+        const products = this.getProducts();
+        let changed = false;
+        products.forEach(product => {
+          if (product.store_id === storeId) {
+            product.precio_venta = this.calculateSalePrice(product.precio_compra, storeId);
+            product.valor_libra = product.tipo === 'pesado' ? product.precio_venta : null;
+            product.updated_at = new Date().toISOString();
+            changed = true;
+          }
+        });
+        if (changed) this.setRaw(this.DB_KEYS.products, products);
+      },
+
+      recalculateAllPrices() {
+        const products = this.getProducts();
+        products.forEach(product => {
+          product.precio_venta = this.calculateSalePrice(product.precio_compra, product.store_id);
+          product.valor_libra = product.tipo === 'pesado' ? product.precio_venta : null;
+          product.updated_at = new Date().toISOString();
+        });
+        this.setRaw(this.DB_KEYS.products, products);
+      },
+
+      calculateSalePrice(cost, storeId) {
+        const value = this.num(cost, 0);
+        const store = this.getStoreById(storeId);
+        const gain = this.num(store?.porcentaje_ganancia, 20);
+        const itbis = this.num(this.getMasterConfig().itbis, 18);
+        const withGain = value + (value * gain / 100);
+        const withItbis = withGain + (withGain * itbis / 100);
+        return this.round2(withItbis);
+      },
+
+      async openScanner(mode = 'sale') {
+        if (typeof Html5Qrcode === 'undefined') {
+          this.toast('El escáner no cargó. Abre el archivo con internet para cargar la librería de cámara.', 'warning');
+          return;
+        }
+        this.state.scannerMode = mode;
+        document.getElementById('scannerModal').classList.remove('hidden');
+        document.getElementById('scannerReader').innerHTML = '<div id="qr-reader" class="min-h-[320px]"></div>';
+        document.getElementById('scannerHint').textContent = mode === 'sale' ? 'Apunta a un código de barras o QR para vender.' : 'Apunta al código del producto para registrarlo o editarlo.';
+        try {
+          await this.ensureCameraPermission();
+          await this.startScanner();
+        } catch (error) {
+          console.error(error);
+          this.toast('No se pudo abrir la cámara. Revisa permisos o usa HTTPS.', 'danger');
+          this.closeScanner();
+        }
+      },
+
+      async ensureCameraPermission() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('getUserMedia no está disponible');
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+        stream.getTracks().forEach(track => track.stop());
+      },
+
+      async startScanner() {
+        const qrReaderId = 'qr-reader';
+        if (this.state.scanner) {
+          await this.closeScanner(true);
+          document.getElementById('scannerModal').classList.remove('hidden');
+          document.getElementById('scannerReader').innerHTML = '<div id="qr-reader" class="min-h-[320px]"></div>';
+        }
+        this.state.scanner = new Html5Qrcode(qrReaderId);
+        const scanConfig = {
+          fps: 18,
+          qrbox: { width: 280, height: 180 },
+          rememberLastUsedCamera: true,
+          videoConstraints: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+        };
+        try {
+          await this.state.scanner.start({ facingMode: { ideal: 'environment' } }, scanConfig, (decodedText) => this.handleScan(decodedText), () => {});
+          this.state.scannerRunning = true;
+        } catch (firstError) {
+          try {
+            const cameras = await Html5Qrcode.getCameras();
+            const preferred = cameras.find(c => /back|rear|environment|trasera/i.test(c.label)) || cameras[cameras.length - 1];
+            if (!preferred) throw firstError;
+            await this.state.scanner.start(preferred.id, { fps: 18, qrbox: { width: 280, height: 180 } }, (decodedText) => this.handleScan(decodedText), () => {});
+            this.state.scannerRunning = true;
+          } catch (secondError) {
+            console.error(secondError);
+            throw secondError;
+          }
+        }
+      },
+
+      async closeScanner(silent = false) {
+        document.getElementById('scannerModal').classList.add('hidden');
+        if (this.state.scanner) {
+          try { if (this.state.scannerRunning) await this.state.scanner.stop(); } catch (e) {}
+          try { await this.state.scanner.clear(); } catch (e) {}
+        }
+        this.state.scanner = null;
+        this.state.scannerRunning = false;
+        if (!silent) document.getElementById('scannerReader').innerHTML = '';
+      },
+
+      handleScan(data) {
+        if (Date.now() < this.state.ignoreScanUntil) return;
+        this.state.ignoreScanUntil = Date.now() + 1500;
+        this.closeScanner();
+        const session = this.getSession();
+        if (!session) return;
+        const parsed = this.parseScanPayload(data);
+        const storeId = session.role === 'owner' ? session.store_id : null;
+
+        if (this.state.scannerMode === 'sale' && session.role === 'owner') {
+          if (parsed.type === 'cspm') {
+            const payload = parsed.payload;
+            if (payload.sid && payload.sid !== storeId) { this.toast('Ese QR pertenece a otra tienda.', 'warning'); return; }
+            this.addProductToCartById(payload.pid, payload);
+            return;
+          }
+          const product = this.getProducts().find(p => p.store_id === storeId && p.id === String(data).trim());
+          if (!product) {
+            this.toast('Ese código no existe en tu inventario. Regístralo primero.', 'warning');
+            this.setActiveTab('inventario');
+            setTimeout(() => { const input = document.getElementById('inventoryId'); if (input) input.value = String(data).trim(); }, 80);
+            return;
+          }
+          this.addProductToCartById(product.id);
+          return;
+        }
+
+        if (this.state.scannerMode === 'inventory') {
+          const code = parsed.type === 'cspm' ? parsed.payload.pid : String(data).trim();
+          const targetStore = session.role === 'owner' ? session.store_id : (document.querySelector('#inventoryForm [name="store_id"]')?.value || this.getStores()[0]?.id);
+          const product = this.getProducts().find(p => p.store_id === targetStore && p.id === code);
+          this.setActiveTab('inventario');
+          setTimeout(() => {
+            if (product) this.openProductModal(targetStore, product.id);
+            else {
+              const input = document.getElementById('inventoryId');
+              if (input) { input.value = code; input.focus(); }
+              this.toast('Código capturado. Completa el formulario para guardar el producto.', 'info');
+            }
+          }, 100);
+        }
+      },
+
+      parseScanPayload(data) {
+        const text = String(data || '').trim();
+        if (text.startsWith('CSPM:')) {
+          try { return { type: 'cspm', payload: JSON.parse(atob(text.slice(5))) }; } catch (e) { console.error(e); }
+        }
+        return { type: 'raw', payload: text };
+      },
+
+      openQrModal(storeId, productId) {
+        const product = this.getProducts().find(p => p.store_id === storeId && p.id === productId);
+        if (!product) { this.toast('No se encontró el producto para QR.', 'danger'); return; }
+        this.state.currentQrProductId = `${storeId}::${productId}`;
+        const card = document.getElementById('qrModalCard');
+        card.innerHTML = `
+          <div class="p-5 md:p-6">
+            <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div><h3 class="text-3xl font-bold text-amber-200">Generador de QR</h3><p class="muted">Crea un QR único para el producto o un QR con precio listo para pegar en el envase.</p></div>
+              <button class="pixel-btn pixel-btn-secondary" onclick="CSPM.closeQrModal()">Cerrar</button>
+            </div>
+            <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-[.95fr_1.05fr]">
+              <div class="space-y-4">
+                <div><label class="pixel-label">Producto</label><div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="text-xl font-semibold text-white">${this.escapeHtml(product.nombre)}</div><div class="mt-1 muted">Código: ${this.escapeHtml(product.id)}</div><div class="mt-1 muted">Precio venta: ${this.money(product.precio_venta)}</div></div></div>
+                <div><label class="pixel-label">Tipo de QR</label><select id="qrModeSelect" class="pixel-select" onchange="CSPM.refreshQrModal()"><option value="product-ref">QR de referencia del producto</option><option value="price-label">QR con precio</option>${product.tipo === 'pesado' ? `<option value="weight-label">QR pesado con peso y precio final</option>` : ''}</select></div>
+                ${product.tipo === 'pesado' ? `<div><label class="pixel-label">Peso en libras para QR pesado</label><input id="qrWeightInput" type="number" step="0.01" min="0.01" value="1" class="pixel-input" oninput="CSPM.refreshQrModal()" /></div>` : ''}
+                <div class="flex flex-wrap gap-2"><button class="pixel-btn pixel-btn-primary" onclick="CSPM.printQrLabel()">Imprimir etiqueta</button><button class="pixel-btn pixel-btn-secondary" onclick="CSPM.refreshQrModal()">Regenerar</button></div>
+              </div>
+              <div>
+                <div id="printArea" class="rounded-[2rem] bg-white p-5 text-center text-slate-950">
+                  <div class="text-2xl font-bold">${this.escapeHtml(product.nombre)}</div>
+                  <div class="mt-1 text-sm text-slate-500">${this.escapeHtml(product.id)}</div>
+                  <div id="qrCanvasWrap" class="mt-4 flex justify-center"></div>
+                  <div id="qrLabelSubtitle" class="mt-3 text-lg font-semibold"></div>
+                  <div class="mt-1 text-sm text-slate-500">ColmadoSync Pro Max</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        document.getElementById('qrModal').classList.remove('hidden');
+        this.refreshQrModal();
+      },
+
+      closeQrModal() { document.getElementById('qrModal').classList.add('hidden'); this.state.currentQrProductId = null; },
+
+      refreshQrModal() {
+        if (!this.state.currentQrProductId) return;
+        const [storeId, productId] = this.state.currentQrProductId.split('::');
+        const product = this.getProducts().find(p => p.store_id === storeId && p.id === productId);
+        if (!product) return;
+        const mode = document.getElementById('qrModeSelect')?.value || 'product-ref';
+        const weight = this.num(document.getElementById('qrWeightInput')?.value, 1);
+        const payload = { k: mode, kind: mode, pid: product.id, sid: product.store_id, ts: Date.now() };
+        let subtitle = `Precio: ${this.money(product.precio_venta)}`;
+        if (mode === 'price-label') { payload.p = this.num(product.precio_venta); subtitle = `Precio final: ${this.money(payload.p)}`; }
+        if (mode === 'weight-label') { payload.w = weight; payload.p = this.num(product.precio_venta); payload.tp = this.round2(weight * this.num(product.precio_venta)); subtitle = `${weight} lb · Total: ${this.money(payload.tp)}`; }
+        const target = document.getElementById('qrCanvasWrap');
+        const label = document.getElementById('qrLabelSubtitle');
+        if (!target || !label) return;
+        target.innerHTML = '';
+        if (typeof QRCode === 'undefined') {
+          target.innerHTML = `<div class="rounded-2xl border border-slate-300 bg-slate-100 p-4 text-center text-slate-700"><div class="text-sm font-semibold">QR no disponible sin internet</div><div class="mt-2 break-all text-xs">${this.escapeHtml('CSPM:' + btoa(JSON.stringify(payload)))}</div></div>`;
+        } else {
+          new QRCode(target, { text: 'CSPM:' + btoa(JSON.stringify(payload)), width: 220, height: 220, correctLevel: QRCode.CorrectLevel.H });
+        }
+        label.textContent = subtitle;
+      },
+
+      printQrLabel() { if (document.getElementById('printArea')) window.print(); },
+
+      renderAdminTab() { this.loadAdminSnapshots(); },
+      startAdminPolling() {
+        const every = Math.max(10, this.num(this.getMasterConfig().auto_sync_seconds, 30)) * 1000;
+        this.stopAdminPolling();
+        this.state.adminPoller = setInterval(() => { if (this.state.activeTab === 'admin') this.loadAdminSnapshots(); }, every);
+      },
+      stopAdminPolling() { if (this.state.adminPoller) clearInterval(this.state.adminPoller); this.state.adminPoller = null; },
+
+      async loadAdminSnapshots() {
+        const localSnapshots = this.buildLocalSnapshotsMap();
+        let remoteSnapshots = {};
+        if (this.getCloudConfig().enabled && navigator.onLine) {
+          try { remoteSnapshots = await this.fetchCloudSnapshots(); }
+          catch (error) { console.error(error); this.toast('No se pudieron cargar los datos remotos. Mostrando vista local.', 'warning'); }
+        }
+        this.state.adminSnapshots = { ...localSnapshots, ...remoteSnapshots };
+        this.renderAdminStores();
+        this.renderAdminChart();
+        this.renderAdminLiveFeed();
+        this.renderAdminProductsTable();
+      },
+
+      buildLocalSnapshotsMap() {
+        const map = {};
+        this.getStores().forEach(store => { map[store.id] = this.buildStoreSnapshot(store.id); });
+        return map;
+      },
+
+      buildStoreSnapshot(storeId) {
+        const store = this.getStoreById(storeId);
+        return {
+          store: { id: store?.id, nombre: store?.nombre, owner_name: store?.owner_name, tipo_negocio: store?.tipo_negocio, porcentaje_ganancia: store?.porcentaje_ganancia, low_stock_threshold: store?.low_stock_threshold, updated_at: store?.updated_at },
+          products: this.getProductsForStore(storeId),
+          sales: this.getSalesForStore(storeId),
+          suppliers: this.getSuppliersForStore(storeId),
+          orders: this.getOrdersForStore(storeId),
+          stats: this.getStoreStats(storeId),
+          updated_at: new Date().toISOString(),
+          source: 'local'
+        };
+      },
+
+      renderAdminStores() {
+        const host = document.getElementById('adminStoreCards');
+        const badge = document.getElementById('cloudStatusBadge');
+        if (!host || !badge) return;
+        const snapshots = Object.values(this.state.adminSnapshots || {});
+        badge.className = 'badge ' + (this.getCloudConfig().enabled ? 'badge-success' : 'badge-warning');
+        badge.textContent = this.getCloudConfig().enabled ? 'Nube configurada' : 'Solo local';
+        if (!snapshots.length) { host.innerHTML = `<div class="empty-state">No hay tiendas registradas todavía.</div>`; return; }
+        host.innerHTML = snapshots.map(snapshot => {
+          const store = snapshot.store || {};
+          return `<div class="pixel-card p-4"><div class="flex items-start justify-between gap-3"><div><div class="text-xl font-semibold text-white">${this.escapeHtml(store.nombre || store.id || 'Tienda')}</div><div class="muted text-sm">${this.escapeHtml(store.tipo_negocio || 'Negocio')}</div></div><span class="badge ${snapshot.source === 'cloud' ? 'badge-success' : 'badge-info'}">${snapshot.source === 'cloud' ? 'Cloud' : 'Local'}</span></div><div class="mt-4 grid grid-cols-2 gap-3 text-sm"><div class="rounded-2xl bg-slate-950/60 p-3"><div class="muted">Productos</div><div class="mt-1 text-xl font-bold text-white">${snapshot.products?.length || 0}</div></div><div class="rounded-2xl bg-slate-950/60 p-3"><div class="muted">Ventas hoy</div><div class="mt-1 text-xl font-bold text-emerald-300">${this.money(snapshot.stats?.todaySalesValue || 0)}</div></div></div><div class="mt-3 text-sm muted">Actualizado: ${this.formatDateTime(snapshot.updated_at || store.updated_at)}</div></div>`;
+        }).join('');
+      },
+
+      renderAdminLiveFeed() {
+        const host = document.getElementById('adminLiveFeed');
+        if (!host) return;
+        const allSales = Object.values(this.state.adminSnapshots || {}).flatMap(snapshot => (snapshot.sales || []).map(sale => ({ ...sale, source_name: snapshot.store?.nombre || sale.store_nombre || sale.store_id }))).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,14);
+        host.innerHTML = allSales.length ? allSales.map(sale => `<div class="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"><div class="flex items-center justify-between gap-3"><div><div class="text-lg font-semibold text-white">${this.escapeHtml(sale.source_name || 'Tienda')}</div><div class="muted text-sm">${this.formatDateTime(sale.created_at)}</div></div><div class="text-right"><div class="text-lg font-bold text-emerald-300">${this.money(sale.total)}</div><div class="muted text-sm">${this.num(sale.item_count)} ítems</div></div></div></div>`).join('') : `<div class="empty-state">Todavía no hay ventas para mostrar en vivo.</div>`;
+      },
+
+      renderAdminChart() {
+        const canvas = document.getElementById('adminSalesChart');
+        if (!canvas) return;
+        const snapshots = Object.values(this.state.adminSnapshots || {});
+        const labels = snapshots.map(snapshot => snapshot.store?.nombre || snapshot.store?.id || 'Tienda');
+        const values = snapshots.map(snapshot => this.num(snapshot.stats?.todaySalesValue, 0));
+        if (typeof Chart === 'undefined') {
+          const parent = canvas.parentElement;
+          if (parent) parent.innerHTML = `<div class="empty-state">La gráfica necesita internet la primera vez para cargar Chart.js. Mientras tanto puedes ver las cifras en las tarjetas de arriba.</div>`;
+          return;
+        }
+        if (this.state.adminChart) { this.state.adminChart.destroy(); this.state.adminChart = null; }
+        this.state.adminChart = new Chart(canvas, {
+          type: 'bar',
+          data: { labels, datasets: [{ label: 'Ventas de hoy (RD$)', data: values, borderWidth: 1 }] },
+          options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#e5e7eb' } } },
+            scales: {
+              x: { ticks: { color: '#cbd5e1' }, grid: { color: 'rgba(148,163,184,.12)' } },
+              y: { beginAtZero: true, ticks: { color: '#cbd5e1' }, grid: { color: 'rgba(148,163,184,.12)' } }
+            }
+          }
+        });
+      },
+
+      renderAdminProductsTable() {
+        const host = document.getElementById('adminProductsTable');
+        if (!host) return;
+        const q = String(document.getElementById('adminProductFilter')?.value || '').trim().toLowerCase();
+        const rows = Object.values(this.state.adminSnapshots || {}).flatMap(snapshot => {
+          const storeName = snapshot.store?.nombre || snapshot.store?.id || 'Tienda';
+          return (snapshot.products || []).map(product => ({ ...product, store_name: storeName }));
+        }).filter(product => !q || String(product.store_name).toLowerCase().includes(q) || String(product.nombre).toLowerCase().includes(q) || String(product.id).toLowerCase().includes(q) || String(product.empresa_proveedora || '').toLowerCase().includes(q));
+        if (!rows.length) { host.innerHTML = `<div class="empty-state">No hay productos para esa búsqueda.</div>`; return; }
+        host.innerHTML = `<div class="table-wrap"><table class="table"><thead><tr><th>Tienda</th><th>Producto</th><th>Código</th><th>Proveedor</th><th>Stock</th><th>Venta</th></tr></thead><tbody>${rows.slice(0,250).map(product => `<tr><td>${this.escapeHtml(product.store_name)}</td><td>${this.escapeHtml(product.nombre)}</td><td>${this.escapeHtml(product.id)}</td><td>${this.escapeHtml(product.empresa_proveedora || '-')}</td><td>${this.num(product.stock)}</td><td>${this.money(product.precio_venta)}</td></tr>`).join('')}</tbody></table></div>`;
+      },
+
+      getCloudConfig() {
+        const master = this.getMasterConfig();
+        return { enabled: !!master.cloud_enabled && !!String(master.firebase_db_url || '').trim(), dbUrl: String(master.firebase_db_url || '').trim().replace(/\/+$/, ''), auth: String(master.firebase_auth_token || '').trim() };
+      },
+      makeFirebaseUrl(path) {
+        const cfg = this.getCloudConfig();
+        const cleanPath = String(path || '').replace(/^\/+/, '').replace(/\/+$/, '');
+        const authPart = cfg.auth ? `?auth=${encodeURIComponent(cfg.auth)}` : '';
+        return `${cfg.dbUrl}/${cleanPath}.json${authPart}`;
+      },
+      async manualSync() { const session = this.getSession(); if (!session) return; if (session.role === 'owner') await this.syncStoreToCloud(session.store_id); else await this.loadAdminSnapshots(); },
+      queueStoreSync(storeId) { clearTimeout(this._syncTimer); this._syncTimer = setTimeout(() => this.syncStoreToCloud(storeId), 1200); },
+
+      async syncStoreToCloud(storeId) {
+        const cfg = this.getCloudConfig();
+        if (!cfg.enabled) { this.toast('La nube no está configurada. Tus datos siguen guardándose localmente.', 'info'); return false; }
+        if (!navigator.onLine) { this.toast('Sin internet. La sincronización queda pendiente.', 'warning'); return false; }
+        const snapshot = this.buildStoreSnapshot(storeId);
+        snapshot.source = 'cloud';
+        snapshot.updated_at = new Date().toISOString();
+        try {
+          const resp = await fetch(this.makeFirebaseUrl(`stores/${storeId}`), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(snapshot) });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          this.toast('Tienda sincronizada con la nube.', 'success');
+          await this.sendTelemetry('cloud_sync', { store_id: storeId });
+          return true;
+        } catch (error) {
+          console.error(error);
+          this.toast('No se pudo sincronizar con la nube.', 'danger');
+          return false;
+        }
+      },
+
+      async fetchCloudSnapshots() {
+        const cfg = this.getCloudConfig();
+        if (!cfg.enabled) return {};
+        const response = await fetch(this.makeFirebaseUrl('stores'));
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const normalized = {};
+        Object.entries(data || {}).forEach(([storeId, snapshot]) => { normalized[storeId] = { ...snapshot, source: 'cloud' }; });
+        return normalized;
+      },
+
+      async restoreMyStoreFromCloud() {
+        const store = this.getCurrentStore();
+        if (!store) return;
+        const cfg = this.getCloudConfig();
+        if (!cfg.enabled) { this.toast('Primero configura la nube desde administración.', 'warning'); return; }
+        if (!navigator.onLine) { this.toast('Necesitas internet para restaurar desde la nube.', 'warning'); return; }
+        try {
+          const resp = await fetch(this.makeFirebaseUrl(`stores/${store.id}`));
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const snapshot = await resp.json();
+          if (!snapshot) { this.toast('No existe copia remota de tu tienda todavía.', 'warning'); return; }
+          const products = this.getProducts().filter(p => p.store_id !== store.id).concat(snapshot.products || []);
+          const sales = this.getSales().filter(s => s.store_id !== store.id).concat(snapshot.sales || []);
+          const suppliers = this.getSuppliers().filter(s => s.store_id !== store.id).concat(snapshot.suppliers || []);
+          const orders = this.getOrders().filter(o => o.store_id !== store.id).concat(snapshot.orders || []);
+          const stores = this.getStores().map(s => s.id === store.id ? { ...s, ...snapshot.store, usuario: s.usuario, password: s.password } : s);
+          this.setRaw(this.DB_KEYS.products, products);
+          this.setRaw(this.DB_KEYS.sales, sales);
+          this.setRaw(this.DB_KEYS.suppliers, suppliers);
+          this.setRaw(this.DB_KEYS.orders, orders);
+          this.setRaw(this.DB_KEYS.stores, stores);
+          this.toast('Tu tienda fue restaurada desde la nube.', 'success');
+          this.renderDashboard();
+        } catch (error) {
+          console.error(error);
+          this.toast('No se pudo restaurar la tienda desde la nube.', 'danger');
+        }
+      },
+
+      async testCloudConnection() {
+        const cfg = this.getCloudConfig();
+        if (!cfg.dbUrl) { this.toast('Escribe la URL de Firebase y guarda la configuración primero.', 'warning'); return; }
+        try {
+          const response = await fetch(this.makeFirebaseUrl('ping'), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ts: new Date().toISOString(), app: 'ColmadoSync Pro Max' }) });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          this.toast('Conexión a nube exitosa.', 'success');
+        } catch (error) {
+          console.error(error);
+          this.toast('Falló la conexión a la nube. Revisa URL, token o reglas.', 'danger');
+        }
+      },
+
+      async sendTelemetry(type, payload = {}) {
+        const telemetry = this.getRaw(this.DB_KEYS.telemetry, []);
+        telemetry.unshift({ id: this.uid('TEL'), type, payload, ts: new Date().toISOString(), device_id: this._localStore.getItem(this.DB_KEYS.device) });
+        this.setRaw(this.DB_KEYS.telemetry, telemetry.slice(0, 500));
+        const url = String(this.getMasterConfig().webhook_url || '').trim();
+        if (!url || !navigator.onLine) return;
+        const body = JSON.stringify({ app: 'ColmadoSync Pro Max', type, payload, ts: new Date().toISOString(), device_id: this._localStore.getItem(this.DB_KEYS.device) });
+        try {
+          if (navigator.sendBeacon) navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+          else fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
+        } catch (e) {}
+      },
+
+      toast(message, kind = 'info') {
+        const host = document.getElementById('toastZone');
+        if (!host) return;
+        const div = document.createElement('div');
+        div.className = 'toast ' + ({ success: 'border border-emerald-500/30 text-emerald-100', danger: 'border border-rose-500/30 text-rose-100', warning: 'border border-amber-500/30 text-amber-100', info: 'border border-sky-500/30 text-sky-100' }[kind] || '');
+        div.textContent = message;
+        host.appendChild(div);
+        setTimeout(() => {
+          div.style.opacity = '0';
+          div.style.transform = 'translateY(-6px)';
+          div.style.transition = 'all .2s ease';
+          setTimeout(() => div.remove(), 220);
+        }, 2800);
+      },
+
+      getRaw(key, fallback) { try { const raw = this._localStore.getItem(key); if (raw === null || raw === undefined || raw === '') return fallback; return JSON.parse(raw); } catch (e) { return fallback; } },
+      setRaw(key, value) { try { this._localStore.setItem(key, JSON.stringify(value)); } catch (e) {} },
+      money(value) { return new Intl.NumberFormat('es-DO', { style: 'currency', currency: 'DOP', maximumFractionDigits: 2 }).format(this.num(value, 0)); },
+      formatDateTime(value) {
+        if (!value) return 'Sin fecha';
+        const dt = new Date(value);
+        if (Number.isNaN(dt.getTime())) return 'Sin fecha';
+        return new Intl.DateTimeFormat('es-DO', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(dt);
+      },
+      relativeDay(value) {
+        if (!value) return 'Pronto';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return 'Pronto';
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const other = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const diff = Math.round((other - start) / 86400000);
+        if (diff === 0) return 'Hoy';
+        if (diff === 1) return 'Mañana';
+        if (diff === -1) return 'Ayer';
+        if (diff > 1) return `En ${diff} días`;
+        return `Hace ${Math.abs(diff)} días`;
+      },
+      slugify(text) { return String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); },
+      uid(prefix = 'ID') { return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`; },
+      num(value, fallback = 0) { const n = Number(value); return Number.isFinite(n) ? n : fallback; },
+      round2(value) { return Math.round(this.num(value, 0) * 100) / 100; },
+      escapeHtml(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); },
+      escapeJs(value) { return String(value ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+    };
+
+    window.CSPM = CSPM;
+    window.addEventListener('error', () => {
+      const splash = document.getElementById('splashScreen');
+      const auth = document.getElementById('authScreen');
+      if (splash) splash.classList.add('hidden');
+      if (auth) auth.classList.remove('hidden');
+    });
+    document.addEventListener('DOMContentLoaded', () => CSPM.init());
+  </script>
+</body>
+</html>
